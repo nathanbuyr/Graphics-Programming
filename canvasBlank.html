@@ -16,7 +16,7 @@
 
   <body>
 
-    <canvas id="canvasOne" width="350" height="400">
+    <canvas id="canvasOne" width="350" height="500">
     </canvas>
 
     <script type="text/javascript">
@@ -29,6 +29,7 @@
     const circle1 = theCanvas.getContext("2d");
     const circle2 = theCanvas.getContext("2d");
     const semicircle = theCanvas.getContext("2d");
+    const quarter = theCanvas.getContext("2d");
     const secondrec= theCanvas.getContext("2d");
     const words = theCanvas.getContext("2d");
 
@@ -69,6 +70,13 @@
     semicircle.fillStyle = "rgb(0, 0, 255, 0.4)";
     semicircle.fill();
     semicircle.stroke();
+
+    //Drawing a quarter of a circle
+    quarter.beginPath();
+    quarter.arc(80, 420, 50, 0, Math.PI * 1.5); // Outer circle
+    quarter.fillStyle = "rgb(0, 0, 255, 0.5)";
+    quarter.fill();
+    quarter.stroke();
 
     </script>
 
