@@ -7,16 +7,15 @@
     <title>Canvas</title>
     <style type="text/css">
       canvas {
- border: black;
+ border: solid black;
 }
-
     </style>
 
   </head>
 
   <body>
 
-    <canvas id="canvasOne" >
+    <canvas id="canvasOne" width="200" height="200">
     </canvas>
 
     <script type="text/javascript">
@@ -25,11 +24,9 @@
 		// Set the canvas up for drawing in 2D.
 		var context = theCanvas.getContext("2d");
 		// Set the fill colour to bright red.
-		
+		context.fillStyle = "rgb(255, 0, 0)";
 		// Create a filled rectangle 
-		
-	  
-		
+    context.fillRect(10, 10, 150, 100);
     </script>
 
   </body>
