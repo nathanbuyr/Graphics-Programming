@@ -16,19 +16,22 @@
 
   <body>
 
-    <canvas id="canvasOne" width="200" height="200">
+    <canvas id="canvasOne" width="350" height="200">
     </canvas>
 
     <script type="text/javascript">
 		// Gets a handle to the element with id canvasOne.
-		var theCanvas = document.getElementById("canvasOne");
+		const theCanvas = document.getElementById("canvasOne");
 		// Set the canvas up for drawing in 2D.
-		var context = theCanvas.getContext("2d");
-    var words = theCanvas.getContext("2d");
+		const context = theCanvas.getContext("2d");
+    const secondrec= theCanvas.getContext("2d");
+    const words = theCanvas.getContext("2d");
 		// Set the fill colour to bright red.
-		context.fillStyle = "rgb(255 0 0 / 50%)";
+		context.fillStyle = "rgb(255, 0, 0, 0.4)";
 		// Create a filled rectangle 
-    context.fillRect(0, 0, 200, 200); 
+    context.fillRect(150, 0, 200, 200);
+    secondrec.fillStyle = "rgb(0, 255, 0, 0.4)";
+    secondrec.fillRect(0, 0, 200, 200);
     // Adding words
     words.font = "24px serif";
     words.fillStyle = "rgb(0, 0, 0)";
