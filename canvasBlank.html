@@ -24,13 +24,15 @@
 		var theCanvas = document.getElementById("canvasOne");
 		// Set the canvas up for drawing in 2D.
 		var context = theCanvas.getContext("2d");
+    var words = theCanvas.getContext("2d");
 		// Set the fill colour to bright red.
-		context.fillStyle = "rgb(255, 0, 0)";
+		context.fillStyle = "rgb(255 0 0 / 50%)";
 		// Create a filled rectangle 
     context.fillRect(0, 0, 200, 200); 
     // Adding words
-    context.font = "25px serif";
-    context.fillText("Nathan Buyrchiyev", 10, 50);
+    words.font = "24px serif";
+    words.fillStyle = "rgb(0, 0, 0)";
+    words.fillText("Nathan Buyrchiyev", 10, 50);
 
     </script>
 
