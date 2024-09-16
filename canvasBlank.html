@@ -16,26 +16,59 @@
 
   <body>
 
-    <canvas id="canvasOne" width="350" height="200">
+    <canvas id="canvasOne" width="350" height="400">
     </canvas>
 
     <script type="text/javascript">
 		// Gets a handle to the element with id canvasOne.
 		const theCanvas = document.getElementById("canvasOne");
+
 		// Set the canvas up for drawing in 2D.
+
 		const context = theCanvas.getContext("2d");
+    const circle1 = theCanvas.getContext("2d");
+    const circle2 = theCanvas.getContext("2d");
+    const semicircle = theCanvas.getContext("2d");
     const secondrec= theCanvas.getContext("2d");
     const words = theCanvas.getContext("2d");
+
 		// Set the fill colour to bright red.
+
 		context.fillStyle = "rgb(255, 0, 0, 0.4)";
+
 		// Create a filled rectangle 
+
     context.fillRect(150, 0, 200, 200);
     secondrec.fillStyle = "rgb(0, 255, 0, 0.4)";
     secondrec.fillRect(0, 0, 200, 200);
+
     // Adding words
+
     words.font = "24px serif";
     words.fillStyle = "rgb(0, 0, 0)";
     words.fillText("Nathan Buyrchiyev", 10, 50);
+
+    //Drawing a circle
+
+    circle1.beginPath();
+    circle1.arc(75, 300, 50, 0, Math.PI * 2); // Outer circle
+    circle1.fillStyle = "rgb(255, 0, 0, 0.4)";
+    circle1.fill();
+    circle1.stroke();
+
+    circle2.beginPath();
+    circle2.arc(150, 300, 50, 0, Math.PI * 2); // Outer circle
+    circle2.fillStyle = "rgb(0, 255, 0, 0.4)";
+    circle2.fill();
+    circle2.stroke();
+
+    //Drawing a semi circle
+
+    semicircle.beginPath();
+    semicircle.arc(280, 300, 50, 0, Math.PI * 1); // Outer circle
+    semicircle.fillStyle = "rgb(0, 0, 255, 0.4)";
+    semicircle.fill();
+    semicircle.stroke();
 
     </script>
 
