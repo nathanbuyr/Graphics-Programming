@@ -69,11 +69,15 @@
     semicircle.arc(280, 300, 50, 0, Math.PI * 1); // Outer circle
     semicircle.fillStyle = "rgb(0, 0, 255, 0.4)";
     semicircle.fill();
+    semicircle.closePath();
     semicircle.stroke();
+    
 
-    //Drawing a quarter of a circle
+    //Drawing 3/4 of a circle
     quarter.beginPath();
-    quarter.arc(80, 420, 50, 0, Math.PI * 1.5); // Outer circle
+    quarter.moveTo(80, 420);
+    quarter.arc(80, 420, 50, 0, Math.PI * 0.5, true); // Outer circle
+    quarter.closePath();
     quarter.fillStyle = "rgb(0, 0, 255, 0.5)";
     quarter.fill();
     quarter.stroke();
