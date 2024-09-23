@@ -54,6 +54,11 @@
       move() {
         this.xpos += this.xvelo;
         this.ypos += this.yvelo;
+        // If the ball hits the bottom of the canvas.
+        if (this.ypos == 498) {
+          // Change ball's direction. (reverse the speed)
+          this.yvelo = this.yvelo * -1;
+        }
       }
 
       resize() {
@@ -65,16 +70,10 @@
     let b1 = new ball(50, 10, 0, 1, 2);
 
     function repeatme() {
-      
+
       // Draw the ball (stroked, not filled).
       b1.draw();
       b1.move();
-
-      // If the ball hits the bottom of the canvas.
-      if (b1.ypos == 498) {
-          // Stop the ball.
-          return;
-        }
 
       window.requestAnimationFrame(repeatme);
 
