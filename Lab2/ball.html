@@ -1,63 +1,91 @@
-
 <!DOCTYPE html>
 
 <html>
 
-  <head>
-    <meta charset="UTF-8">
-    <title>Canvas</title>
+<head>
+  <meta charset="UTF-8">
+  <title>Canvas</title>
 
-    <style type="text/css">
-      body {
-          background-color: white;
+  <style type="text/css">
+    body {
+      background-color: white;
+    }
+
+    canvas {
+      border: solid black;
+
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <h1>Nathan Buyrchiyev</h1>
+
+  <canvas id="canvas-for-ball" width="350" height="500"></canvas>
+
+  <script type="text/javascript">
+    // Gets a handle to the element with id canvasOne.
+    var canvas = document.getElementById("canvas-for-ball");
+    // Get a 2D context for the canvas.
+    var ctx = canvas.getContext("2d");
+
+    // A function to repeat every time the animation loops.
+
+    class ball {
+      constructor(xpos, ypos, xvelo, yvelo, radius) {
+        this.xpos = xpos;
+        this.ypos = ypos;
+        this.xvelo = xvelo;
+        this.yvelo = yvelo;
+        this.radius = radius;
       }
-      canvas {
- border:solid black ;
- 
-}
-    </style>
 
-  </head>
-
-  <body>
-
-    <h1>Nathan Buyrchiyev</h1>
-
-    <canvas id="canvas-for-ball" width="350" height="500"></canvas>
-
-    <script type="text/javascript">
-      // Gets a handle to the element with id canvasOne.
-      var canvas = document.getElementById("canvas-for-ball");
-      // Get a 2D context for the canvas.
-      var ctx = canvas.getContext("2d");
-      
-      // The vertical location of the ball.
-      var y = 10;
-      // A function to repeat every time the animation loops.
-      function repeatme() {
+      draw() {
         //Clearing the ball so it doesnt repeat on itself
         ctx.clearRect(0, 0, 350, 500);
-        // Draw the ball (stroked, not filled).
+
         ctx.beginPath();
-        ctx.arc(50, y, 3, 0, 2 * Math.PI);
+        ctx.arc(this.xpos, this.ypos, 3, 0, this.radius * Math.PI);
         ctx.stroke();
-        
-        // Update the y location.
-        y += 1;
-        
-        window.requestAnimationFrame(repeatme);
       }
 
-      // If the ball hits the bottom of the canvas.
-if (...) {
- // Stop the ball.
- ...
- }
-      
-      // Get the animation going.
-      repeatme();
-    </script>
+      move() {
+        this.xpos += this.xvelo;
+        this.ypos += this.yvelo;
+      }
 
-  </body>
+      resize() {
+
+      }
+    }
+
+    //Creating a ball object
+    let b1 = new ball(50, 10, 0, 1, 2);
+
+    function repeatme() {
+      
+      // Draw the ball (stroked, not filled).
+      b1.draw();
+      b1.move();
+
+      // If the ball hits the bottom of the canvas.
+      if (b1.ypos == 498) {
+          // Stop the ball.
+          return;
+        }
+
+      window.requestAnimationFrame(repeatme);
+
+
+    }
+
+
+    // Get the animation going.
+    repeatme();
+  </script>
+
+</body>
 
 </html>
