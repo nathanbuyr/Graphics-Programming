@@ -42,6 +42,8 @@
     context.fillRect(150, 0, 200, 200);
     secondrec.fillStyle = "rgb(0, 255, 0, 0.4)";
     secondrec.fillRect(0, 0, 200, 200);
+    context.strokeRect(150, 0, 200, 200);
+    secondrec.strokeRect(0, 0, 200, 200);
 
     // Adding words
 
@@ -78,7 +80,7 @@
     quarter.moveTo(80, 420);
     quarter.arc(80, 420, 50, 0, Math.PI * 0.5, true); // Outer circle
     quarter.closePath();
-    quarter.fillStyle = "rgb(0, 0, 255, 0.5)";
+    quarter.fillStyle = "rgb(255, 153, 204, 0.5)";
     quarter.fill();
     quarter.stroke();
 
