@@ -31,64 +31,58 @@
 
 		// Set the canvas up for drawing in 2D.
 
-		const context = theCanvas.getContext("2d");
-    const circle1 = theCanvas.getContext("2d");
-    const circle2 = theCanvas.getContext("2d");
-    const semicircle = theCanvas.getContext("2d");
-    const quarter = theCanvas.getContext("2d");
-    const secondrec= theCanvas.getContext("2d");
-    const words = theCanvas.getContext("2d");
+		const ctx = theCanvas.getContext("2d");
 
 		// Set the fill colour to bright red.
 
-		context.fillStyle = "rgb(255, 0, 0, 0.4)";
+		ctx.fillStyle = "rgb(255, 0, 0, 0.4)";
 
 		// Create a filled rectangle 
 
-    context.fillRect(150, 0, 200, 200);
-    secondrec.fillStyle = "rgb(0, 255, 0, 0.4)";
-    secondrec.fillRect(0, 0, 200, 200);
-    context.strokeRect(150, 0, 200, 200);
-    secondrec.strokeRect(0, 0, 200, 200);
+    ctx.fillRect(150, 0, 200, 200);
+    ctx.fillStyle = "rgb(0, 255, 0, 0.4)";
+    ctx.fillRect(0, 0, 200, 200);
+    ctx.strokeRect(150, 0, 200, 200);
+    ctx.strokeRect(0, 0, 200, 200);
 
     // Adding words
 
-    words.font = "24px serif";
-    words.fillStyle = "rgb(0, 0, 0)";
-    words.fillText("Nathan Buyrchiyev", 10, 50);
+    ctx.font = "24px serif";
+    ctx.fillStyle = "rgb(0, 0, 0)";
+    ctx.fillText("Nathan Buyrchiyev", 10, 50);
 
     //Drawing a circle
 
-    circle1.beginPath();
-    circle1.arc(75, 300, 50, 0, Math.PI * 2); // Outer circle
-    circle1.fillStyle = "rgb(255, 0, 0, 0.4)";
-    circle1.fill();
-    circle1.stroke();
+    ctx.beginPath();
+    ctx.arc(75, 300, 50, 0, Math.PI * 2); // Outer circle
+    ctx.fillStyle = "rgb(255, 0, 0, 0.4)";
+    ctx.fill();
+    ctx.stroke();
 
-    circle2.beginPath();
-    circle2.arc(150, 300, 50, 0, Math.PI * 2); // Outer circle
-    circle2.fillStyle = "rgb(0, 255, 0, 0.4)";
-    circle2.fill();
-    circle2.stroke();
+    ctx.beginPath();
+    ctx.arc(150, 300, 50, 0, Math.PI * 2); // Outer circle
+    ctx.fillStyle = "rgb(0, 255, 0, 0.4)";
+    ctx.fill();
+    ctx.stroke();
 
     //Drawing a semi circle
 
-    semicircle.beginPath();
-    semicircle.arc(280, 300, 50, 0, Math.PI * 1); // Outer circle
-    semicircle.fillStyle = "rgb(0, 0, 255, 0.4)";
-    semicircle.fill();
-    semicircle.closePath();
-    semicircle.stroke();
+    ctx.beginPath();
+    ctx.arc(280, 300, 50, 0, Math.PI * 1); // Outer circle
+    ctx.fillStyle = "rgb(0, 0, 255, 0.4)";
+    ctx.fill();
+    ctx.closePath();
+    ctx.stroke();
     
 
     //Drawing 3/4 of a circle
-    quarter.beginPath();
-    quarter.moveTo(80, 420);
-    quarter.arc(80, 420, 50, 0, Math.PI * 0.5, true); // Outer circle
-    quarter.closePath();
-    quarter.fillStyle = "rgb(255, 153, 204, 0.5)";
-    quarter.fill();
-    quarter.stroke();
+    ctx.beginPath();
+    ctx.moveTo(80, 420);
+    ctx.arc(80, 420, 50, 0, Math.PI * 0.5, true); // Outer circle
+    ctx.closePath();
+    ctx.fillStyle = "rgb(255, 153, 204, 0.5)";
+    ctx.fill();
+    ctx.stroke();
 
     </script>
 
