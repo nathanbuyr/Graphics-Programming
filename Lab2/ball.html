@@ -40,6 +40,8 @@
         this.xvelo = xvelo;
         this.yvelo = yvelo;
         this.radius = radius;
+
+        this.rotation = 0;
       }
 
       draw() {
@@ -47,7 +49,16 @@
         ctx.clearRect(0, 0, 350, 500);
 
         ctx.beginPath();
-        ctx.arc(this.xpos, this.ypos, 3, 0, this.radius * Math.PI);
+        ctx.arc(this.xpos, this.ypos, 10, 0, this.radius * Math.PI);
+        ctx.stroke();
+
+        this.rotation = this.rotation + 0.1;
+        
+        var x1 = (15 * Math.cos((Math.PI/4)+this.rotation)) + 50;
+        var y1 = (15 * Math.sin((Math.PI/4)+this.rotation)) + this.ypos;
+
+        ctx.moveTo(50, this.ypos);
+        ctx.lineTo(x1,y1);
         ctx.stroke();
       }
 
@@ -55,9 +66,24 @@
         this.xpos += this.xvelo;
         this.ypos += this.yvelo;
         // If the ball hits the bottom of the canvas.
-        if (this.ypos == 198) {
+        if (this.ypos == 200 - this.radius) {
           // Change ball's direction. (reverse the speed)
           this.yvelo = this.yvelo * -1;
+        }
+        // Otherwise, if the ball hits the top.
+        else if (this.ypos == this.radius) {
+          // Reverse the ball the other way.
+          this.yvelo = this.yvelo * -1;
+        }
+        // If the ball hits the side of the canvas.
+        if (this.xpos == 350 - this.radius) {
+          // Change ball's direction. (reverse the speed)
+          this.xvelo = this.xvelo * -1;
+        }
+        // Otherwise, if the ball hits the top.
+        else if (this.xpos == this.radius) {
+          // Reverse the ball the other way.
+          this.xvelo = this.xvelo * -1;
         }
       }
 
@@ -67,7 +93,7 @@
     }
 
     //Creating a ball object
-    let b1 = new ball(50, 10, 0, 1, 2);
+    let b1 = new ball(50, 10, 1, 1, 10);
 
     function repeatme() {
 
