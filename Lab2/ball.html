@@ -54,30 +54,30 @@
 
         this.rotation = this.rotation + 0.1;
         
-        var x1 = (15 * Math.cos((Math.PI/4))) + this.xpos;
-        var y1 = (15 * Math.sin((Math.PI/4))) + this.ypos;
+        var x1 = (15 * Math.cos((Math.PI/4)+this.rotation)) + this.xpos;
+        var y1 = (15 * Math.sin((Math.PI/4)+this.rotation)) + this.ypos;
 
         ctx.moveTo(this.xpos, this.ypos);
         ctx.lineTo(x1,y1);
         ctx.lineWidth = 3;
         ctx.stroke();
 
-        var x2 = (15 * Math.cos((Math.PI/-0.8))) + this.xpos;
-        var y2 = (15 * Math.sin((Math.PI/-0.8))) + this.ypos;
+        var x2 = (15 * Math.cos((Math.PI/-0.8)+this.rotation)) + this.xpos;
+        var y2 = (15 * Math.sin((Math.PI/-0.8)+this.rotation)) + this.ypos;
 
         ctx.moveTo(this.xpos, this.ypos);
         ctx.lineTo(x2,y2);
         ctx.stroke();
 
-        var x3 = (15 * Math.cos((Math.PI/2))) + this.xpos;
-        var y3 = (15 * Math.sin((Math.PI/2))) + this.ypos;
+        var x3 = (15 * Math.cos((Math.PI/2)+this.rotation)) + this.xpos;
+        var y3 = (15 * Math.sin((Math.PI/2)+this.rotation)) + this.ypos;
 
         ctx.moveTo(this.xpos, this.ypos);
         ctx.lineTo(x3,y3);
         ctx.stroke();
 
-        var x4 = (15 * Math.cos((Math.PI/-2))) + this.xpos;
-        var y4 = (15 * Math.sin((Math.PI/-2))) + this.ypos;
+        var x4 = (15 * Math.cos((Math.PI/-2)+this.rotation)) + this.xpos;
+        var y4 = (15 * Math.sin((Math.PI/-2)+this.rotation)) + this.ypos;
 
         ctx.moveTo(this.xpos, this.ypos);
         ctx.lineTo(x4,y4);
