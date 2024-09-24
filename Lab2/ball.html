@@ -23,7 +23,7 @@
 
   <h1>Nathan Buyrchiyev</h1>
 
-  <canvas id="canvas-for-ball" width="350" height="500"></canvas>
+  <canvas id="canvas-for-ball" width="350" height="200"></canvas>
 
   <script type="text/javascript">
     // Gets a handle to the element with id canvasOne.
@@ -55,7 +55,7 @@
         this.xpos += this.xvelo;
         this.ypos += this.yvelo;
         // If the ball hits the bottom of the canvas.
-        if (this.ypos == 498) {
+        if (this.ypos == 198) {
           // Change ball's direction. (reverse the speed)
           this.yvelo = this.yvelo * -1;
         }
