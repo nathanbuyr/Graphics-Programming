@@ -49,16 +49,38 @@
         ctx.clearRect(0, 0, 350, 500);
 
         ctx.beginPath();
-        ctx.arc(this.xpos, this.ypos, 10, 0, this.radius * Math.PI);
+        ctx.arc(this.xpos, this.ypos, 15, 0, this.radius * Math.PI);
         ctx.stroke();
 
         this.rotation = this.rotation + 0.1;
         
-        var x1 = (15 * Math.cos((Math.PI/4)+this.rotation)) + 50;
-        var y1 = (15 * Math.sin((Math.PI/4)+this.rotation)) + this.ypos;
+        var x1 = (15 * Math.cos((Math.PI/4))) + this.xpos;
+        var y1 = (15 * Math.sin((Math.PI/4))) + this.ypos;
 
-        ctx.moveTo(50, this.ypos);
+        ctx.moveTo(this.xpos, this.ypos);
         ctx.lineTo(x1,y1);
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        var x2 = (15 * Math.cos((Math.PI/-0.8))) + this.xpos;
+        var y2 = (15 * Math.sin((Math.PI/-0.8))) + this.ypos;
+
+        ctx.moveTo(this.xpos, this.ypos);
+        ctx.lineTo(x2,y2);
+        ctx.stroke();
+
+        var x3 = (15 * Math.cos((Math.PI/2))) + this.xpos;
+        var y3 = (15 * Math.sin((Math.PI/2))) + this.ypos;
+
+        ctx.moveTo(this.xpos, this.ypos);
+        ctx.lineTo(x3,y3);
+        ctx.stroke();
+
+        var x4 = (15 * Math.cos((Math.PI/-2))) + this.xpos;
+        var y4 = (15 * Math.sin((Math.PI/-2))) + this.ypos;
+
+        ctx.moveTo(this.xpos, this.ypos);
+        ctx.lineTo(x4,y4);
         ctx.stroke();
       }
 
@@ -93,7 +115,7 @@
     }
 
     //Creating a ball object
-    let b1 = new ball(50, 10, 1, 1, 10);
+    let b1 = new ball(60, 30, 1, 1, 15);
 
     function repeatme() {
 
