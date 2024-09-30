@@ -13,7 +13,6 @@
 
     canvas {
       border: solid black;
-
     }
   </style>
 
@@ -31,9 +30,8 @@
     // Get a 2D context for the canvas.
     var ctx = canvas.getContext("2d");
 
-    // A function to repeat every time the animation loops.
-
     class ball {
+      //Constructors
       constructor(xpos, ypos, xvelo, yvelo, radius) {
         this.xpos = xpos;
         this.ypos = ypos;
@@ -42,92 +40,86 @@
         this.radius = radius;
 
         this.rotation = 0;
+        this.rotationSpeed = 0.1; // New property to control rotation speed
+      }
+
+      rotate() {
+        this.rotation += this.rotationSpeed;
       }
 
       draw() {
-        //Clearing the ball so it doesnt repeat on itself
+        // Clearing the ball so it doesn't repeat on itself
         ctx.clearRect(0, 0, 350, 500);
 
         ctx.beginPath();
         ctx.arc(this.xpos, this.ypos, 15, 0, this.radius * Math.PI);
         ctx.stroke();
 
-        this.rotation = this.rotation + 0.1;
-        
-        var x1 = (15 * Math.cos((Math.PI/4)+this.rotation)) + this.xpos;
-        var y1 = (15 * Math.sin((Math.PI/4)+this.rotation)) + this.ypos;
+        // First line
+        var x1 = (15 * Math.cos((Math.PI / 4) + this.rotation)) + this.xpos;
+        var y1 = (15 * Math.sin((Math.PI / 4) + this.rotation)) + this.ypos;
 
         ctx.moveTo(this.xpos, this.ypos);
-        ctx.lineTo(x1,y1);
+        ctx.lineTo(x1, y1);
         ctx.lineWidth = 3;
         ctx.stroke();
 
-        var x2 = (15 * Math.cos((Math.PI/-0.8)+this.rotation)) + this.xpos;
-        var y2 = (15 * Math.sin((Math.PI/-0.8)+this.rotation)) + this.ypos;
+        // Second line
+        var x2 = (15 * Math.cos((Math.PI / -0.8) + this.rotation)) + this.xpos;
+        var y2 = (15 * Math.sin((Math.PI / -0.8) + this.rotation)) + this.ypos;
 
         ctx.moveTo(this.xpos, this.ypos);
-        ctx.lineTo(x2,y2);
+        ctx.lineTo(x2, y2);
         ctx.stroke();
 
-        var x3 = (15 * Math.cos((Math.PI/2)+this.rotation)) + this.xpos;
-        var y3 = (15 * Math.sin((Math.PI/2)+this.rotation)) + this.ypos;
+        // Third line
+        var x3 = (15 * Math.cos((Math.PI / 2) + this.rotation)) + this.xpos;
+        var y3 = (15 * Math.sin((Math.PI / 2) + this.rotation)) + this.ypos;
 
         ctx.moveTo(this.xpos, this.ypos);
-        ctx.lineTo(x3,y3);
+        ctx.lineTo(x3, y3);
         ctx.stroke();
 
-        var x4 = (15 * Math.cos((Math.PI/-2)+this.rotation)) + this.xpos;
-        var y4 = (15 * Math.sin((Math.PI/-2)+this.rotation)) + this.ypos;
+        // Fourth line
+        var x4 = (15 * Math.cos((Math.PI / -2) + this.rotation)) + this.xpos;
+        var y4 = (15 * Math.sin((Math.PI / -2) + this.rotation)) + this.ypos;
 
         ctx.moveTo(this.xpos, this.ypos);
-        ctx.lineTo(x4,y4);
+        ctx.lineTo(x4, y4);
         ctx.stroke();
       }
 
       move() {
         this.xpos += this.xvelo;
         this.ypos += this.yvelo;
+
         // If the ball hits the bottom of the canvas.
-        if (this.ypos == 200 - this.radius) {
-          // Change ball's direction. (reverse the speed)
-          this.yvelo = this.yvelo * -1;
+        if (this.ypos >= 200 - this.radius || this.ypos <= this.radius) {
+          this.yvelo *= -1; // Reverse vertical movement
+          this.rotationSpeed *= -1; // Reverse rotation
         }
-        // Otherwise, if the ball hits the top.
-        else if (this.ypos == this.radius) {
-          // Reverse the ball the other way.
-          this.yvelo = this.yvelo * -1;
-        }
-        // If the ball hits the side of the canvas.
-        if (this.xpos == 350 - this.radius) {
-          // Change ball's direction. (reverse the speed)
-          this.xvelo = this.xvelo * -1;
-        }
-        // Otherwise, if the ball hits the top.
-        else if (this.xpos == this.radius) {
-          // Reverse the ball the other way.
-          this.xvelo = this.xvelo * -1;
-        }
-      }
 
-      resize() {
-
+        // If the ball hits the sides of the canvas.
+        if (this.xpos >= 350 - this.radius || this.xpos <= this.radius) {
+          this.xvelo *= -1; // Reverse horizontal movement
+          this.rotationSpeed *= -1; // Reverse rotation
+        }
       }
     }
 
-    //Creating a ball object
+    // Creating a ball object
     let b1 = new ball(60, 30, 1, 1, 15);
 
+    // A function to repeat every time the animation loops.
     function repeatme() {
 
       // Draw the ball (stroked, not filled).
       b1.draw();
       b1.move();
+      b1.rotate();
 
       window.requestAnimationFrame(repeatme);
-
-
     }
-
 
     // Get the animation going.
     repeatme();
