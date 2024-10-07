@@ -31,7 +31,7 @@
 		var ctx = canvas.getContext("2d");
 
 		class Ball {
-			//Constructors
+			// Constructors
 			constructor(xpos, ypos, xvelo, yvelo, radius) {
 				this.xpos = xpos;
 				this.ypos = ypos;
@@ -55,38 +55,17 @@
 				ctx.arc(this.xpos, this.ypos, 15, 0, this.radius * Math.PI);
 				ctx.stroke();
 
-				// First line
-				var x1 = (15 * Math.cos((Math.PI / 4) + this.rotation)) + this.xpos;
-				var y1 = (15 * Math.sin((Math.PI / 4) + this.rotation)) + this.ypos;
+				// Drawing rotation lines
+				for (let i = 0; i < 4; i++) {
+					const angle = (Math.PI / 4) * (i + 1) + this.rotation;
+					const x = 15 * Math.cos(angle) + this.xpos;
+					const y = 15 * Math.sin(angle) + this.ypos;
 
-				ctx.moveTo(this.xpos, this.ypos);
-				ctx.lineTo(x1, y1);
-				ctx.lineWidth = 3;
-				ctx.stroke();
-
-				// Second line
-				var x2 = (15 * Math.cos((Math.PI / -0.8) + this.rotation)) + this.xpos;
-				var y2 = (15 * Math.sin((Math.PI / -0.8) + this.rotation)) + this.ypos;
-
-				ctx.moveTo(this.xpos, this.ypos);
-				ctx.lineTo(x2, y2);
-				ctx.stroke();
-
-				// Third line
-				var x3 = (15 * Math.cos((Math.PI / 2) + this.rotation)) + this.xpos;
-				var y3 = (15 * Math.sin((Math.PI / 2) + this.rotation)) + this.ypos;
-
-				ctx.moveTo(this.xpos, this.ypos);
-				ctx.lineTo(x3, y3);
-				ctx.stroke();
-
-				// Fourth line
-				var x4 = (15 * Math.cos((Math.PI / -2) + this.rotation)) + this.xpos;
-				var y4 = (15 * Math.sin((Math.PI / -2) + this.rotation)) + this.ypos;
-
-				ctx.moveTo(this.xpos, this.ypos);
-				ctx.lineTo(x4, y4);
-				ctx.stroke();
+					ctx.moveTo(this.xpos, this.ypos);
+					ctx.lineTo(x, y);
+					ctx.lineWidth = 3;
+					ctx.stroke();
+				}
 			}
 
 			move() {
@@ -109,20 +88,16 @@
 
 		class Paddle {
 			// Constructor for paddle
-			constructor(paddleHeight, paddleWidth) {
+			constructor(paddleHeight, paddleWidth, paddleX, paddleY) {
 				this.paddleHeight = paddleHeight;
 				this.paddleWidth = paddleWidth;
-
-				// Set the initial position for vertical paddle
-				this.paddleX = 10; // 10 pixels from the left side of the canvas
-				this.paddleY = (canvas.height - paddleHeight) / 2; // Vertically centered
-
-				// Key press states
+				this.paddleX = paddleX; // X position passed in for different paddles
+				this.paddleY = paddleY; // Initial Y position
 				this.upPressed = false;
 				this.downPressed = false;
 			}
 
-			// Draw the vertical paddle
+			// Draw the paddle
 			drawPaddle() {
 				ctx.beginPath();
 				ctx.rect(this.paddleX, this.paddleY, this.paddleWidth, this.paddleHeight);
@@ -132,24 +107,24 @@
 			}
 
 			// Key down handler
-			keyDownHandler(e) {
-				if (e.key == "ArrowUp") {
+			keyDownHandler(e, upKey, downKey) {
+				if (e.key == upKey) {
 					this.upPressed = true;
-				} else if (e.key == "ArrowDown") {
+				} else if (e.key == downKey) {
 					this.downPressed = true;
 				}
 			}
 
-			// Key up handler to stop movement when key is released
-			keyUpHandler(e) {
-				if (e.key == "ArrowUp") {
+			// Key up handler
+			keyUpHandler(e, upKey, downKey) {
+				if (e.key == upKey) {
 					this.upPressed = false;
-				} else if (e.key == "ArrowDown") {
+				} else if (e.key == downKey) {
 					this.downPressed = false;
 				}
 			}
 
-			// Move the paddle up and down with keyboard
+			// Move the paddle up and down
 			move() {
 				if (this.upPressed && this.paddleY > 0) {
 					this.paddleY -= 7; // Move paddle up
@@ -157,50 +132,54 @@
 					this.paddleY += 7; // Move paddle down
 				}
 			}
-
-			// Move the paddle with the mouse
-			mouseMoveHandler(e) {
-    // Get the Y position of the mouse relative to the canvas
-    let mouseY = e.clientY - canvas.offsetTop;
-    
-    // Set the paddle's Y position to the mouse Y position
-    // Make sure the paddle doesn't go off the canvas
-    if (mouseY > 0 && mouseY < canvas.height - this.paddleHeight) {
-        this.paddleY = mouseY;
-    }
-}
 		}
 
-		// Create a Paddle object
-		let p1 = new Paddle(90, 10);
+		// Create Paddle objects (one on the left, one on the right)
+		let leftPaddle = new Paddle(90, 10, 10, (canvas.height - 90) / 2); // Left side paddle
+		let rightPaddle = new Paddle(90, 10, canvas.width - 20, (canvas.height - 90) / 2); // Right side paddle
 
-		// Creating a ball object
+		// Create a ball object
 		let b1 = new Ball(60, 30, 1, 1, 15);
 
-		// A function to repeat every time the animation loops.
+		// Function to repeat the animation loop
 		function repeatme() {
-
 			// Draw the ball (stroked, not filled).
 			b1.draw();
 			b1.move();
 			b1.rotate();
 
-			// Draw and move the paddle
-			p1.drawPaddle();
-			p1.move();
+			// Draw and move the paddles
+			leftPaddle.drawPaddle();
+			leftPaddle.move();
 
+			rightPaddle.drawPaddle();
+			rightPaddle.move();
+
+			// Request next frame
 			window.requestAnimationFrame(repeatme);
 		}
 
 		// Get the animation going.
 		repeatme();
 
-		// Add event listeners for key press and release
-		document.addEventListener("keydown", (e) => p1.keyDownHandler(e));
-		document.addEventListener("keyup", (e) => p1.keyUpHandler(e));
+		// Add event listeners for the left paddle (controlled by Up/Down arrows)
+		document.addEventListener("keydown", (e) => leftPaddle.keyDownHandler(e, "ArrowUp", "ArrowDown"));
+		document.addEventListener("keyup", (e) => leftPaddle.keyUpHandler(e, "ArrowUp", "ArrowDown"));
 
-		// Add event listener for mouse movement
-		document.addEventListener("mousemove", (e) => p1.mouseMoveHandler(e));
+		// Add event listeners for the right paddle (controlled by 'W' and 'S')
+		document.addEventListener("keydown", (e) => rightPaddle.keyDownHandler(e, "w", "s"));
+		document.addEventListener("keyup", (e) => rightPaddle.keyUpHandler(e, "w", "s"));
+
+		// Mouse move handler for the left paddle
+		function mouseMoveHandler(e) {
+			let mouseY = e.clientY - canvas.offsetTop; // Get mouse Y position relative to canvas
+			if (mouseY > 0 && mouseY < canvas.height - leftPaddle.paddleHeight) {
+				leftPaddle.paddleY = mouseY; // Update left paddle's Y position
+			}
+		}
+
+		// Add mouse move event listener for the left paddle
+		canvas.addEventListener('mousemove', mouseMoveHandler);
 
 	</script>
 
