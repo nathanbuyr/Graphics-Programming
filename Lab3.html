@@ -40,7 +40,7 @@
 				this.radius = radius;
 
 				this.rotation = 0;
-				this.rotationSpeed = 0.1; // New property to control rotation speed
+				this.rotationSpeed = 0.1; // Property to control rotation speed
 			}
 
 			rotate() {
@@ -48,25 +48,46 @@
 			}
 
 			draw() {
-				// Clearing the ball so it doesn't repeat on itself
-				ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Clearing the ball so it doesn't repeat on itself
+        ctx.clearRect(0, 0, 500, 350);
 
-				ctx.beginPath();
-				ctx.arc(this.xpos, this.ypos, 15, 0, this.radius * Math.PI);
-				ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(this.xpos, this.ypos, 15, 0, this.radius * Math.PI);
+        ctx.stroke();
 
-				// Drawing rotation lines
-				for (let i = 0; i < 4; i++) {
-					const angle = (Math.PI / 4) * (i + 1) + this.rotation;
-					const x = 15 * Math.cos(angle) + this.xpos;
-					const y = 15 * Math.sin(angle) + this.ypos;
+        // First line
+        var x1 = (15 * Math.cos((Math.PI / 4) + this.rotation)) + this.xpos;
+        var y1 = (15 * Math.sin((Math.PI / 4) + this.rotation)) + this.ypos;
 
-					ctx.moveTo(this.xpos, this.ypos);
-					ctx.lineTo(x, y);
-					ctx.lineWidth = 3;
-					ctx.stroke();
-				}
-			}
+        ctx.moveTo(this.xpos, this.ypos);
+        ctx.lineTo(x1, y1);
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        // Second line
+        var x2 = (15 * Math.cos((Math.PI / -0.8) + this.rotation)) + this.xpos;
+        var y2 = (15 * Math.sin((Math.PI / -0.8) + this.rotation)) + this.ypos;
+
+        ctx.moveTo(this.xpos, this.ypos);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        // Third line
+        var x3 = (15 * Math.cos((Math.PI / 2) + this.rotation)) + this.xpos;
+        var y3 = (15 * Math.sin((Math.PI / 2) + this.rotation)) + this.ypos;
+
+        ctx.moveTo(this.xpos, this.ypos);
+        ctx.lineTo(x3, y3);
+        ctx.stroke();
+
+        // Fourth line
+        var x4 = (15 * Math.cos((Math.PI / -2) + this.rotation)) + this.xpos;
+        var y4 = (15 * Math.sin((Math.PI / -2) + this.rotation)) + this.ypos;
+
+        ctx.moveTo(this.xpos, this.ypos);
+        ctx.lineTo(x4, y4);
+        ctx.stroke();
+      }
 
 			move() {
 				this.xpos += this.xvelo;
@@ -180,6 +201,15 @@
 
 		// Add mouse move event listener for the left paddle
 		canvas.addEventListener('mousemove', mouseMoveHandler);
+
+		// Add event listener for ball speed control (1 and 2 keys)
+		document.addEventListener('keydown', function (e) {
+			if (e.key === '1') {
+				b1.rotationSpeed = Math.max(0.01, b1.rotationSpeed - 0.01); // Slow down the rotation
+			} else if (e.key === '2') {
+				b1.rotationSpeed += 0.05; // Speed up the rotation
+			}
+		});
 
 	</script>
 
