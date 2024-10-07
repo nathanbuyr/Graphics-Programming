@@ -41,6 +41,7 @@
 
 				this.rotation = 0;
 				this.rotationSpeed = 0.1; // Property to control rotation speed
+				this.gravity = 0.01; // Gravity acceleration
 			}
 
 			rotate() {
@@ -90,19 +91,29 @@
       }
 
 			move() {
+				// Apply gravity to vertical velocity
+				this.yvelo += this.gravity;
+
 				this.xpos += this.xvelo;
 				this.ypos += this.yvelo;
 
 				// If the ball hits the bottom of the canvas.
-				if (this.ypos >= canvas.height - this.radius || this.ypos <= this.radius) {
-					this.yvelo *= -1; // Reverse vertical movement
+				if (this.ypos >= canvas.height - this.radius) {
+					this.ypos = canvas.height - this.radius; // Reset position to bottom
+					this.yvelo *= -0.9; // Reverse and lose energy (90% bounce)
+					this.rotationSpeed *= -1; // Reverse rotation
+				}
+
+				// If the ball hits the top of the canvas.
+				if (this.ypos <= this.radius) {
+					this.ypos = this.radius; // Reset position to top
+					this.yvelo *= -0.9; // Reverse and lose energy (90% bounce)
 					this.rotationSpeed *= -1; // Reverse rotation
 				}
 
 				// If the ball hits the sides of the canvas.
 				if (this.xpos >= canvas.width - this.radius || this.xpos <= this.radius) {
 					this.xvelo *= -1; // Reverse horizontal movement
-					this.rotationSpeed *= -1; // Reverse rotation
 				}
 			}
 		}
@@ -205,7 +216,7 @@
 		// Add event listener for ball speed control (1 and 2 keys)
 		document.addEventListener('keydown', function (e) {
 			if (e.key === '1') {
-				b1.rotationSpeed = Math.max(0.01, b1.rotationSpeed - 0.01); // Slow down the rotation
+				b1.rotationSpeed = Math.max(0.01, b1.rotationSpeed - 0.05); // Slow down the rotation
 			} else if (e.key === '2') {
 				b1.rotationSpeed += 0.05; // Speed up the rotation
 			}
