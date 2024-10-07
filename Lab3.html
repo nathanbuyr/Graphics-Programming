@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html>
+
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Canvas</title>
+
+	<style type="text/css">
+		canvas {
+			border: 1px solid grey;
+		}
+	</style>
+
+</head>
+
+<body>
+
+	<canvas id="canvas-for-ball"></canvas>
+
+	<script type="text/javascript">
+
+		// Gets a handle to the element with id canvasOne.
+		var canvas = document.getElementById("canvas-for-ball");
+		// Set the canvas width and height.
+		canvas.width = 500;
+		canvas.height = 350;
+		// Get a 2D context for the canvas.
+		var ctx = canvas.getContext("2d");
+
+		class Ball {
+			//Constructors
+			constructor(xpos, ypos, xvelo, yvelo, radius) {
+				this.xpos = xpos;
+				this.ypos = ypos;
+				this.xvelo = xvelo;
+				this.yvelo = yvelo;
+				this.radius = radius;
+
+				this.rotation = 0;
+				this.rotationSpeed = 0.1; // New property to control rotation speed
+			}
+
+			rotate() {
+				this.rotation += this.rotationSpeed;
+			}
+
+			draw() {
+				// Clearing the ball so it doesn't repeat on itself
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+				ctx.beginPath();
+				ctx.arc(this.xpos, this.ypos, 15, 0, this.radius * Math.PI);
+				ctx.stroke();
+
+				// First line
+				var x1 = (15 * Math.cos((Math.PI / 4) + this.rotation)) + this.xpos;
+				var y1 = (15 * Math.sin((Math.PI / 4) + this.rotation)) + this.ypos;
+
+				ctx.moveTo(this.xpos, this.ypos);
+				ctx.lineTo(x1, y1);
+				ctx.lineWidth = 3;
+				ctx.stroke();
+
+				// Second line
+				var x2 = (15 * Math.cos((Math.PI / -0.8) + this.rotation)) + this.xpos;
+				var y2 = (15 * Math.sin((Math.PI / -0.8) + this.rotation)) + this.ypos;
+
+				ctx.moveTo(this.xpos, this.ypos);
+				ctx.lineTo(x2, y2);
+				ctx.stroke();
+
+				// Third line
+				var x3 = (15 * Math.cos((Math.PI / 2) + this.rotation)) + this.xpos;
+				var y3 = (15 * Math.sin((Math.PI / 2) + this.rotation)) + this.ypos;
+
+				ctx.moveTo(this.xpos, this.ypos);
+				ctx.lineTo(x3, y3);
+				ctx.stroke();
+
+				// Fourth line
+				var x4 = (15 * Math.cos((Math.PI / -2) + this.rotation)) + this.xpos;
+				var y4 = (15 * Math.sin((Math.PI / -2) + this.rotation)) + this.ypos;
+
+				ctx.moveTo(this.xpos, this.ypos);
+				ctx.lineTo(x4, y4);
+				ctx.stroke();
+			}
+
+			move() {
+				this.xpos += this.xvelo;
+				this.ypos += this.yvelo;
+
+				// If the ball hits the bottom of the canvas.
+				if (this.ypos >= canvas.height - this.radius || this.ypos <= this.radius) {
+					this.yvelo *= -1; // Reverse vertical movement
+					this.rotationSpeed *= -1; // Reverse rotation
+				}
+
+				// If the ball hits the sides of the canvas.
+				if (this.xpos >= canvas.width - this.radius || this.xpos <= this.radius) {
+					this.xvelo *= -1; // Reverse horizontal movement
+					this.rotationSpeed *= -1; // Reverse rotation
+				}
+			}
+		}
+
+		class Paddle {
+			// Constructor for paddle
+			constructor(paddleHeight, paddleWidth) {
+				this.paddleHeight = paddleHeight;
+				this.paddleWidth = paddleWidth;
+
+				// Set the initial position for vertical paddle
+				this.paddleX = 10; // 10 pixels from the left side of the canvas
+				this.paddleY = (canvas.height - paddleHeight) / 2; // Vertically centered
+
+				// Key press states
+				this.upPressed = false;
+				this.downPressed = false;
+			}
+
+			// Draw the vertical paddle
+			drawPaddle() {
+				ctx.beginPath();
+				ctx.rect(this.paddleX, this.paddleY, this.paddleWidth, this.paddleHeight);
+				ctx.fillStyle = "#0095DD";
+				ctx.fill();
+				ctx.closePath();
+			}
+
+			// Key down handler
+			keyDownHandler(e) {
+				if (e.key == "ArrowUp") {
+					this.upPressed = true;
+				} else if (e.key == "ArrowDown") {
+					this.downPressed = true;
+				}
+			}
+
+			// Key up handler to stop movement when key is released
+			keyUpHandler(e) {
+				if (e.key == "ArrowUp") {
+					this.upPressed = false;
+				} else if (e.key == "ArrowDown") {
+					this.downPressed = false;
+				}
+			}
+
+			// Move the paddle up and down with keyboard
+			move() {
+				if (this.upPressed && this.paddleY > 0) {
+					this.paddleY -= 7; // Move paddle up
+				} else if (this.downPressed && this.paddleY < canvas.height - this.paddleHeight) {
+					this.paddleY += 7; // Move paddle down
+				}
+			}
+
+			// Move the paddle with the mouse
+			mouseMoveHandler(e) {
+    // Get the Y position of the mouse relative to the canvas
+    let mouseY = e.clientY - canvas.offsetTop;
+    
+    // Set the paddle's Y position to the mouse Y position
+    // Make sure the paddle doesn't go off the canvas
+    if (mouseY > 0 && mouseY < canvas.height - this.paddleHeight) {
+        this.paddleY = mouseY;
+    }
+}
+		}
+
+		// Create a Paddle object
+		let p1 = new Paddle(90, 10);
+
+		// Creating a ball object
+		let b1 = new Ball(60, 30, 1, 1, 15);
+
+		// A function to repeat every time the animation loops.
+		function repeatme() {
+
+			// Draw the ball (stroked, not filled).
+			b1.draw();
+			b1.move();
+			b1.rotate();
+
+			// Draw and move the paddle
+			p1.drawPaddle();
+			p1.move();
+
+			window.requestAnimationFrame(repeatme);
+		}
+
+		// Get the animation going.
+		repeatme();
+
+		// Add event listeners for key press and release
+		document.addEventListener("keydown", (e) => p1.keyDownHandler(e));
+		document.addEventListener("keyup", (e) => p1.keyUpHandler(e));
+
+		// Add event listener for mouse movement
+		document.addEventListener("mousemove", (e) => p1.mouseMoveHandler(e));
+
+	</script>
+
+</body>
+
+</html>
