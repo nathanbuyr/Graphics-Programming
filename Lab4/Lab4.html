@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
 
 <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
@@ -22,7 +21,6 @@
 	<canvas id="canvas-for-ball"></canvas>
 
 	<script type="text/javascript">
-
 		// Gets a handle to the element with id canvasOne.
 		var canvas = document.getElementById("canvas-for-ball");
 		// Set the canvas width and height.
@@ -32,7 +30,6 @@
 		var ctx = canvas.getContext("2d");
 
 		class Ball {
-			// Constructors
 			constructor(xpos, ypos, xvelo, yvelo, radius) {
 				this.xpos = xpos;
 				this.ypos = ypos;
@@ -92,54 +89,46 @@
 			}
 
 			move() {
-				// Apply gravity to vertical velocity
 				this.yvelo += this.gravity;
-
 				this.xpos += this.xvelo;
 				this.ypos += this.yvelo;
 
-				// If the ball hits the bottom of the canvas.
 				if (this.ypos >= canvas.height - this.radius) {
-					this.ypos = canvas.height - this.radius; // Reset position to bottom
-					this.yvelo *= -0.9; // Reverse and lose energy (90% bounce)
-					this.rotationSpeed *= -1; // Reverse rotation
+					this.ypos = canvas.height - this.radius;
+					this.yvelo *= -0.9;
+					this.rotationSpeed *= -1;
 				}
 
-				// If the ball hits the top of the canvas.
 				if (this.ypos <= this.radius) {
-					this.ypos = this.radius; // Reset position to top
-					this.yvelo *= -0.9; // Reverse and lose energy (90% bounce)
-					this.rotationSpeed *= -1; // Reverse rotation
+					this.ypos = this.radius;
+					this.yvelo *= -0.9;
+					this.rotationSpeed *= -1;
 				}
 
-				// If the ball hits the sides of the canvas.
 				if (this.xpos >= canvas.width - this.radius || this.xpos <= this.radius) {
-					this.xvelo *= -1; // Reverse horizontal movement
+					this.xvelo *= -1;
 				}
 			}
 		}
 
 		class Paddle {
-			// Constructor for paddle
-			constructor(paddleHeight, paddleWidth, paddleX, paddleY) {
-				this.paddleHeight = paddleHeight;
-				this.paddleWidth = paddleWidth;
-				this.paddleX = paddleX; // X position passed in for different paddles
-				this.paddleY = paddleY; // Initial Y position
+			constructor(radius, paddleX, paddleY) {
+				this.radius = radius;
+				this.paddleX = paddleX;
+				this.paddleY = paddleY;
 				this.upPressed = false;
 				this.downPressed = false;
 			}
 
-			// Draw the paddle
+			// Draw the paddle as a ball
 			drawPaddle() {
 				ctx.beginPath();
-				ctx.rect(this.paddleX, this.paddleY, this.paddleWidth, this.paddleHeight);
+				ctx.arc(this.paddleX, this.paddleY, this.radius, 0, Math.PI * 2);
 				ctx.fillStyle = "#0095DD";
 				ctx.fill();
 				ctx.closePath();
 			}
 
-			// Key down handler
 			keyDownHandler(e, upKey, downKey) {
 				if (e.key == upKey) {
 					this.upPressed = true;
@@ -148,7 +137,6 @@
 				}
 			}
 
-			// Key up handler
 			keyUpHandler(e, upKey, downKey) {
 				if (e.key == upKey) {
 					this.upPressed = false;
@@ -157,72 +145,57 @@
 				}
 			}
 
-			// Move the paddle up and down
 			move() {
-				if (this.upPressed && this.paddleY > 0) {
-					this.paddleY -= 7; // Move paddle up
-				} else if (this.downPressed && this.paddleY < canvas.height - this.paddleHeight) {
-					this.paddleY += 7; // Move paddle down
+				// Prevent the paddles from going outside the canvas
+				if (this.upPressed && this.paddleY > this.radius) {
+					this.paddleY -= 7;
+				} else if (this.downPressed && this.paddleY < canvas.height - this.radius) {
+					this.paddleY += 7;
 				}
 			}
 		}
 
-		// Create Paddle objects (one on the left, one on the right)
-		let leftPaddle = new Paddle(90, 10, 10, (canvas.height - 90) / 2); // Left side paddle
-		let rightPaddle = new Paddle(90, 10, canvas.width - 20, (canvas.height - 90) / 2); // Right side paddle
+		let leftPaddle = new Paddle(15, 30, canvas.height / 2); // Ball paddle
+		let rightPaddle = new Paddle(15, canvas.width - 30, canvas.height / 2); // Ball paddle
 
-		// Create a ball object
 		let b1 = new Ball(60, 30, 1, 1, 15);
 
-		// Function to repeat the animation loop
 		function repeatme() {
-			// Draw the ball (stroked, not filled).
 			b1.draw();
 			b1.move();
 			b1.rotate();
 
-			// Draw and move the paddles
 			leftPaddle.drawPaddle();
 			leftPaddle.move();
 
 			rightPaddle.drawPaddle();
 			rightPaddle.move();
 
-			// Request next frame
 			window.requestAnimationFrame(repeatme);
 		}
 
-		// Get the animation going.
 		repeatme();
 
-		// Add event listeners for the left paddle (controlled by Up/Down arrows)
 		document.addEventListener("keydown", (e) => leftPaddle.keyDownHandler(e, "ArrowUp", "ArrowDown"));
 		document.addEventListener("keyup", (e) => leftPaddle.keyUpHandler(e, "ArrowUp", "ArrowDown"));
 
-		// Add event listeners for the right paddle (controlled by 'W' and 'S')
 		document.addEventListener("keydown", (e) => rightPaddle.keyDownHandler(e, "w", "s"));
 		document.addEventListener("keyup", (e) => rightPaddle.keyUpHandler(e, "w", "s"));
 
-		// Mouse move handler for the left paddle
-		function mouseMoveHandler(e) {
-			let mouseY = e.clientY - canvas.offsetTop; // Get mouse Y position relative to canvas
-			if (mouseY > 0 && mouseY < canvas.height - leftPaddle.paddleHeight) {
-				leftPaddle.paddleY = mouseY; // Update left paddle's Y position
-			}
-		}
-
-		// Add mouse move event listener for the left paddle
-		canvas.addEventListener('mousemove', mouseMoveHandler);
-
-		// Add event listener for ball speed control (1 and 2 keys)
-		document.addEventListener('keydown', function (e) {
-			if (e.key === '1') {
-				b1.rotationSpeed = Math.max(0.01, b1.rotationSpeed - 0.05); // Slow down the rotation
-			} else if (e.key === '2') {
-				b1.rotationSpeed += 0.05; // Speed up the rotation
+		canvas.addEventListener('mousemove', function (e) {
+			let mouseY = e.clientY - canvas.offsetTop;
+			if (mouseY > leftPaddle.radius && mouseY < canvas.height - leftPaddle.radius) {
+				leftPaddle.paddleY = mouseY;
 			}
 		});
 
+		document.addEventListener('keydown', function (e) {
+			if (e.key === '1') {
+				b1.rotationSpeed = Math.max(0.01, b1.rotationSpeed - 0.05);
+			} else if (e.key === '2') {
+				b1.rotationSpeed += 0.05;
+			}
+		});
 	</script>
 
 </body>
