@@ -4,199 +4,233 @@
 <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
 
 <head>
-	<meta charset="UTF-8">
-	<title>Canvas</title>
+    <meta charset="UTF-8">
+    <title>Canvas</title>
 
-	<style type="text/css">
-		canvas {
-			border: 1px solid grey;
-		}
-	</style>
+    <style type="text/css">
+        canvas {
+            border: 1px solid grey;
+        }
+    </style>
 
 </head>
 
 <body>
 
-	<h1>Nathan Buyrchiyev</h1>
-	<canvas id="canvas-for-ball"></canvas>
+    <h1>Nathan Buyrchiyev</h1>
+    <canvas id="canvas-for-ball"></canvas>
 
-	<script type="text/javascript">
-		// Gets a handle to the element with id canvasOne.
-		var canvas = document.getElementById("canvas-for-ball");
-		// Set the canvas width and height.
-		canvas.width = 500;
-		canvas.height = 350;
-		// Get a 2D context for the canvas.
-		var ctx = canvas.getContext("2d");
+    <script type="text/javascript">
+        // Gets a handle to the element with id canvasOne.
+        var canvas = document.getElementById("canvas-for-ball");
+        // Set the canvas width and height.
+        canvas.width = 500;
+        canvas.height = 350;
+        // Get a 2D context for the canvas.
+        var ctx = canvas.getContext("2d");
 
-		class Ball {
-			constructor(xpos, ypos, xvelo, yvelo, radius) {
-				this.xpos = xpos;
-				this.ypos = ypos;
-				this.xvelo = xvelo;
-				this.yvelo = yvelo;
-				this.radius = radius;
+        class Ball {
+            constructor(xpos, ypos, xvelo, yvelo, radius) {
+                this.xpos = xpos;
+                this.ypos = ypos;
+                this.xvelo = xvelo;
+                this.yvelo = yvelo;
+                this.radius = radius;
 
-				this.rotation = 0;
-				this.rotationSpeed = 0.1; // Property to control rotation speed
-				this.gravity = 0.2; // Gravity acceleration
-			}
+                this.rotation = 0;
+                this.rotationSpeed = 0.1; // Property to control rotation speed
+                this.gravity = 0.2; // Gravity acceleration
+            }
 
-			rotate() {
-				this.rotation += this.rotationSpeed;
-			}
+            rotate() {
+                this.rotation += this.rotationSpeed;
+            }
 
-			draw() {
-				// Clearing the ball so it doesn't repeat on itself
-				ctx.clearRect(0, 0, 500, 350);
+            draw() {
+                // Clearing the ball so it doesn't repeat on itself
+                ctx.clearRect(0, 0, 500, 350);
 
-				ctx.beginPath();
-				ctx.arc(this.xpos, this.ypos, 15, 0, this.radius * Math.PI);
-				ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(this.xpos, this.ypos, 15, 0, this.radius * Math.PI);
+                ctx.stroke();
 
-				// First line
-				var x1 = (15 * Math.cos((Math.PI / 4) + this.rotation)) + this.xpos;
-				var y1 = (15 * Math.sin((Math.PI / 4) + this.rotation)) + this.ypos;
+                // First line
+                var x1 = (15 * Math.cos((Math.PI / 4) + this.rotation)) + this.xpos;
+                var y1 = (15 * Math.sin((Math.PI / 4) + this.rotation)) + this.ypos;
 
-				ctx.moveTo(this.xpos, this.ypos);
-				ctx.lineTo(x1, y1);
-				ctx.lineWidth = 3;
-				ctx.stroke();
+                ctx.moveTo(this.xpos, this.ypos);
+                ctx.lineTo(x1, y1);
+                ctx.lineWidth = 3;
+                ctx.stroke();
 
-				// Second line
-				var x2 = (15 * Math.cos((Math.PI / -0.8) + this.rotation)) + this.xpos;
-				var y2 = (15 * Math.sin((Math.PI / -0.8) + this.rotation)) + this.ypos;
+                // Second line
+                var x2 = (15 * Math.cos((Math.PI / -0.8) + this.rotation)) + this.xpos;
+                var y2 = (15 * Math.sin((Math.PI / -0.8) + this.rotation)) + this.ypos;
 
-				ctx.moveTo(this.xpos, this.ypos);
-				ctx.lineTo(x2, y2);
-				ctx.stroke();
+                ctx.moveTo(this.xpos, this.ypos);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
 
-				// Third line
-				var x3 = (15 * Math.cos((Math.PI / 2) + this.rotation)) + this.xpos;
-				var y3 = (15 * Math.sin((Math.PI / 2) + this.rotation)) + this.ypos;
+                // Third line
+                var x3 = (15 * Math.cos((Math.PI / 2) + this.rotation)) + this.xpos;
+                var y3 = (15 * Math.sin((Math.PI / 2) + this.rotation)) + this.ypos;
 
-				ctx.moveTo(this.xpos, this.ypos);
-				ctx.lineTo(x3, y3);
-				ctx.stroke();
+                ctx.moveTo(this.xpos, this.ypos);
+                ctx.lineTo(x3, y3);
+                ctx.stroke();
 
-				// Fourth line
-				var x4 = (15 * Math.cos((Math.PI / -2) + this.rotation)) + this.xpos;
-				var y4 = (15 * Math.sin((Math.PI / -2) + this.rotation)) + this.ypos;
+                // Fourth line
+                var x4 = (15 * Math.cos((Math.PI / -2) + this.rotation)) + this.xpos;
+                var y4 = (15 * Math.sin((Math.PI / -2) + this.rotation)) + this.ypos;
 
-				ctx.moveTo(this.xpos, this.ypos);
-				ctx.lineTo(x4, y4);
-				ctx.stroke();
-			}
+                ctx.moveTo(this.xpos, this.ypos);
+                ctx.lineTo(x4, y4);
+                ctx.stroke();
+            }
 
-			move() {
-				this.yvelo += this.gravity;
-				this.xpos += this.xvelo;
-				this.ypos += this.yvelo;
+            move() {
+                this.yvelo += this.gravity;
+                this.xpos += this.xvelo;
+                this.ypos += this.yvelo;
 
-				if (this.ypos >= canvas.height - this.radius) {
-					this.ypos = canvas.height - this.radius;
-					this.yvelo *= -0.9;
-					this.rotationSpeed *= -1;
-				}
+                if (this.ypos >= canvas.height - this.radius) {
+                    this.ypos = canvas.height - this.radius;
+                    this.yvelo *= -0.9;
+                    this.rotationSpeed *= -1;
+                }
 
-				if (this.ypos <= this.radius) {
-					this.ypos = this.radius;
-					this.yvelo *= -0.9;
-					this.rotationSpeed *= -1;
-				}
+                if (this.ypos <= this.radius) {
+                    this.ypos = this.radius;
+                    this.yvelo *= -0.9;
+                    this.rotationSpeed *= -1;
+                }
 
-				if (this.xpos >= canvas.width - this.radius || this.xpos <= this.radius) {
-					this.xvelo *= -1;
-				}
-			}
-		}
+                if (this.xpos >= canvas.width - this.radius || this.xpos <= this.radius) {
+                    this.xvelo *= -1;
+                }
+            }
+        }
 
-		class Paddle {
-			constructor(radius, paddleX, paddleY) {
-				this.radius = radius;
-				this.paddleX = paddleX;
-				this.paddleY = paddleY;
-				this.upPressed = false;
-				this.downPressed = false;
-			}
+        class Paddle {
+            constructor(radius, paddleX, paddleY) {
+                this.radius = radius;
+                this.paddleX = paddleX;
+                this.paddleY = paddleY;
+                this.upPressed = false;
+                this.downPressed = false;
+            }
 
-			// Draw the paddle as a ball
-			drawPaddle() {
-				ctx.beginPath();
-				ctx.arc(this.paddleX, this.paddleY, this.radius, 0, Math.PI * 2);
-				ctx.fillStyle = "#0095DD";
-				ctx.fill();
-				ctx.closePath();
-			}
+            // Draw the paddle as a ball
+            drawPaddle() {
+                ctx.beginPath();
+                ctx.arc(this.paddleX, this.paddleY, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = "#0095DD";
+                ctx.fill();
+                ctx.closePath();
+            }
 
-			keyDownHandler(e, upKey, downKey) {
-				if (e.key == upKey) {
-					this.upPressed = true;
-				} else if (e.key == downKey) {
-					this.downPressed = true;
-				}
-			}
+            keyDownHandler(e, upKey, downKey) {
+                if (e.key == upKey) {
+                    this.upPressed = true;
+                } else if (e.key == downKey) {
+                    this.downPressed = true;
+                }
+            }
 
-			keyUpHandler(e, upKey, downKey) {
-				if (e.key == upKey) {
-					this.upPressed = false;
-				} else if (e.key == downKey) {
-					this.downPressed = false;
-				}
-			}
+            keyUpHandler(e, upKey, downKey) {
+                if (e.key == upKey) {
+                    this.upPressed = false;
+                } else if (e.key == downKey) {
+                    this.downPressed = false;
+                }
+            }
 
-			move() {
-				// Prevent the paddles from going outside the canvas
-				if (this.upPressed && this.paddleY > this.radius) {
-					this.paddleY -= 7;
-				} else if (this.downPressed && this.paddleY < canvas.height - this.radius) {
-					this.paddleY += 7;
-				}
-			}
-		}
+            move() {
+                // Prevent the paddles from going outside the canvas
+                if (this.upPressed && this.paddleY > this.radius) {
+                    this.paddleY -= 7;
+                } else if (this.downPressed && this.paddleY < canvas.height - this.radius) {
+                    this.paddleY += 7;
+                }
+            }
 
-		let leftPaddle = new Paddle(15, 30, canvas.height / 2); // Ball paddle
-		let rightPaddle = new Paddle(15, canvas.width - 30, canvas.height / 2); // Ball paddle
 
-		let b1 = new Ball(60, 30, 1, 1, 15);
+        }
 
-		function repeatme() {
-			b1.draw();
-			b1.move();
-			b1.rotate();
+        let leftPaddle = new Paddle(15, 30, canvas.height / 2); // Ball paddle
+        let rightPaddle = new Paddle(15, canvas.width - 30, canvas.height / 2); // Ball paddle
 
-			leftPaddle.drawPaddle();
-			leftPaddle.move();
+        let b1 = new Ball(60, 30, 10, 1, 15);
+        let message = "";
 
-			rightPaddle.drawPaddle();
-			rightPaddle.move();
+        function clearMessage() {
+            message = ""; // Clear the message after 750 milliseconds
+        }
 
-			window.requestAnimationFrame(repeatme);
-		}
+        function detectCollision(ball, paddle) {
+            // Using pythagorus' theorem to find out distance between circles
+            let dx = ball.xpos - paddle.paddleX;
+            let dy = ball.ypos - paddle.paddleY;
+            let distance = Math.sqrt(dx * dx + dy * dy);
 
-		repeatme();
+            // Check if a collision was detected
+            if (distance <= ball.radius + paddle.radius) {
+                console.log("Collision detected!");
+                message = "Collision!"
+                ctx.font = "20px Arial";
+                // Set a timeout to clear the message after 0.75 seconds
+                setTimeout(clearMessage, 750);
+            }
+        }
 
-		document.addEventListener("keydown", (e) => leftPaddle.keyDownHandler(e, "ArrowUp", "ArrowDown"));
-		document.addEventListener("keyup", (e) => leftPaddle.keyUpHandler(e, "ArrowUp", "ArrowDown"));
+        function repeatme() {
+            b1.draw();
+            b1.move();
+            b1.rotate();
 
-		document.addEventListener("keydown", (e) => rightPaddle.keyDownHandler(e, "w", "s"));
-		document.addEventListener("keyup", (e) => rightPaddle.keyUpHandler(e, "w", "s"));
+            leftPaddle.drawPaddle();
+            leftPaddle.move();
 
-		canvas.addEventListener('mousemove', function (e) {
-			let mouseY = e.clientY - canvas.offsetTop;
-			if (mouseY > leftPaddle.radius && mouseY < canvas.height - leftPaddle.radius) {
-				leftPaddle.paddleY = mouseY;
-			}
-		});
+            rightPaddle.drawPaddle();
+            rightPaddle.move();
 
-		document.addEventListener('keydown', function (e) {
-			if (e.key === '1') {
-				b1.rotationSpeed = Math.max(0.01, b1.rotationSpeed - 0.05);
-			} else if (e.key === '2') {
-				b1.rotationSpeed += 0.05;
-			}
-		});
-	</script>
+            // Detect collisions
+            detectCollision(b1, leftPaddle);
+            detectCollision(b1, rightPaddle);
+
+            //Checking to see if message exists, if it does, display the message
+            if (message) {
+                ctx.font = "25px Arial";
+                ctx.fillText(message, canvas.width / 2 - 80, 50);
+            }
+
+
+            window.requestAnimationFrame(repeatme);
+        }
+
+        repeatme();
+
+        document.addEventListener("keydown", (e) => leftPaddle.keyDownHandler(e, "ArrowUp", "ArrowDown"));
+        document.addEventListener("keyup", (e) => leftPaddle.keyUpHandler(e, "ArrowUp", "ArrowDown"));
+
+        document.addEventListener("keydown", (e) => rightPaddle.keyDownHandler(e, "w", "s"));
+        document.addEventListener("keyup", (e) => rightPaddle.keyUpHandler(e, "w", "s"));
+
+        canvas.addEventListener('mousemove', function (e) {
+            let mouseY = e.clientY - canvas.offsetTop;
+            if (mouseY > leftPaddle.radius && mouseY < canvas.height - leftPaddle.radius) {
+                leftPaddle.paddleY = mouseY;
+            }
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === '1') {
+                b1.rotationSpeed = Math.max(0.01, b1.rotationSpeed - 0.05);
+            } else if (e.key === '2') {
+                b1.rotationSpeed += 0.05;
+            }
+        });
+    </script>
 
 </body>
 
