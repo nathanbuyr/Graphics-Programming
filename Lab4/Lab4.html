@@ -168,7 +168,7 @@
         }
 
         function detectCollision(ball, paddle) {
-            // Using pythagorus' theorem to find out distance between circles
+            // Using pythagoreas' theorem to find out distance between circles
             let dx = ball.xpos - paddle.paddleX;
             let dy = ball.ypos - paddle.paddleY;
             let distance = Math.sqrt(dx * dx + dy * dy);
@@ -176,8 +176,16 @@
             // Check if a collision was detected
             if (distance <= ball.radius + paddle.radius) {
                 console.log("Collision detected!");
-                message = "Collision!"
+                message = "Collision!";
+
+                // Reverse ball's x velocity upon collision
+                ball.xvelo *= -1;
+
+                // Reverse ball's y velocity upon collision
+                ball.yvelo *= -1; // This will make it bounce vertically as well
+
                 ctx.font = "20px Arial";
+
                 // Set a timeout to clear the message after 0.75 seconds
                 setTimeout(clearMessage, 750);
             }
