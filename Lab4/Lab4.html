@@ -39,7 +39,7 @@
 
                 this.rotation = 0;
                 this.rotationSpeed = 0.1; // Property to control rotation speed
-                this.gravity = 0.2; // Gravity acceleration
+                this.gravity = 0.008; // Gravity acceleration
             }
 
             rotate() {
@@ -49,6 +49,10 @@
             draw() {
                 // Clearing the ball so it doesn't repeat on itself
                 ctx.clearRect(0, 0, 500, 350);
+                
+                //Changing the colour of the ball
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 3;
 
                 ctx.beginPath();
                 ctx.arc(this.xpos, this.ypos, 15, 0, this.radius * Math.PI);
@@ -159,8 +163,11 @@
 
         let leftPaddle = new Paddle(15, 30, canvas.height / 2); // Ball paddle
         let rightPaddle = new Paddle(15, canvas.width - 30, canvas.height / 2); // Ball paddle
+        let leftScore = 0;    // Score for the left paddle
+        let rightScore = 0;   // Score for the right paddle
 
-        let b1 = new Ball(60, 30, 10, 1, 15);
+
+        let b1 = new Ball(60, 30, 3, 0.3, 15);
         let message = "";
 
         function clearMessage() {
@@ -168,7 +175,7 @@
         }
 
         function detectCollision(ball, paddle) {
-            // Using pythagoreas' theorem to find out distance between circles
+            // Using Pythagorean theorem to find out distance between circles
             let dx = ball.xpos - paddle.paddleX;
             let dy = ball.ypos - paddle.paddleY;
             let distance = Math.sqrt(dx * dx + dy * dy);
@@ -178,11 +185,15 @@
                 console.log("Collision detected!");
                 message = "Collision!";
 
-                // Reverse ball's x velocity upon collision
+                // Reverse ball's velocity
                 ball.xvelo *= -1;
 
-                // Reverse ball's y velocity upon collision
-                ball.yvelo *= -1; // This will make it bounce vertically as well
+                // Increment score based on which paddle is hit
+                if (paddle === leftPaddle) {
+                    leftScore++;  // Increment left paddle's score
+                } else if (paddle === rightPaddle) {
+                    rightScore++;   // Increment right paddle's score
+                }
 
                 ctx.font = "20px Arial";
 
@@ -190,6 +201,7 @@
                 setTimeout(clearMessage, 750);
             }
         }
+
 
         function repeatme() {
             b1.draw();
@@ -205,6 +217,12 @@
             // Detect collisions
             detectCollision(b1, leftPaddle);
             detectCollision(b1, rightPaddle);
+
+            // Display scores
+            ctx.font = "25px Arial";
+            ctx.fillStyle = "#0095DD";
+            ctx.fillText("Left Score: " + leftScore, 10, 30);     // Left paddle score
+            ctx.fillText("Right Score: " + rightScore, 280, 30); // Right paddle
 
             //Checking to see if message exists, if it does, display the message
             if (message) {
