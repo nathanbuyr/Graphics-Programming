@@ -49,7 +49,7 @@
             draw() {
                 // Clearing the ball so it doesn't repeat on itself
                 ctx.clearRect(0, 0, 500, 350);
-                
+
                 //Changing the colour of the ball
                 ctx.strokeStyle = "red";
                 ctx.lineWidth = 3;
@@ -224,6 +224,7 @@
             ctx.fillText("Left Score: " + leftScore, 10, 30);     // Left paddle score
             ctx.fillText("Right Score: " + rightScore, 280, 30); // Right paddle
 
+
             //Checking to see if message exists, if it does, display the message
             if (message) {
                 ctx.font = "25px Arial";
@@ -252,9 +253,29 @@
         document.addEventListener('keydown', function (e) {
             if (e.key === '1') {
                 b1.rotationSpeed = Math.max(0.01, b1.rotationSpeed - 0.05);
-            } else if (e.key === '2') {
+            }
+            else if (e.key === '2') {
                 b1.rotationSpeed += 0.05;
             }
+            else if (e.key === '3') {
+                if (b1.xvelo < 0) 
+                {
+                    b1.xvelo -= 1;
+                } else 
+                {
+                    b1.xvelo += 1;
+                }
+            }
+            else if (e.key === '4') {
+                if (b1.yvelo < 0) 
+                {
+                    b1.yvelo -= 1;
+                } else 
+                {
+                    b1.yvelo += 1;
+                }
+            }
+
         });
     </script>
 
