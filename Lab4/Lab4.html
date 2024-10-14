@@ -121,15 +121,15 @@
                 }
 
                 // Collision detection for the left or right walls of the canvas
-                //Deincrement if ball hits left wall
+                //Deincrement if ball hits right wall
                 if (this.xpos >= canvas.width - this.radius) {
                     this.xvelo *= -1;
-                    leftScore--;
+                    rightScore--;
                 }
-                //Deincrement if ball hits right wall
+                //Deincrement if ball hits left wall
                 if (this.xpos <= this.radius) {
                     this.xvelo *= -1;
-                    rightScore--;
+                    leftScore--;
                 }
             }
         }
