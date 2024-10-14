@@ -40,6 +40,18 @@
                 this.rotation = 0;
                 this.rotationSpeed = 0.1; // Property to control rotation speed
                 this.gravity = 0.008; // Gravity acceleration
+
+                // Random color generation
+                this.color = this.getRandomColor();
+            }
+
+            getRandomColor() {
+                const letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)]; //Math.floor used to round down to natural number
+                }
+                return color;
             }
 
             rotate() {
@@ -47,16 +59,14 @@
             }
 
             draw() {
-                // Clearing the ball so it doesn't repeat on itself
-                ctx.clearRect(0, 0, 500, 350);
-
-                //Changing the colour of the ball
-                ctx.strokeStyle = "red";
-                ctx.lineWidth = 3;
-
+                // Draw the ball using the random color
                 ctx.beginPath();
-                ctx.arc(this.xpos, this.ypos, 15, 0, this.radius * Math.PI);
+                ctx.arc(this.xpos, this.ypos, this.radius, 0, Math.PI * 2);
+                ctx.strokeStyle = this.color; // Use the ball's color
                 ctx.stroke();
+
+                // Draw the rotation lines
+                ctx.lineWidth = 3;
 
                 // First line
                 var x1 = (15 * Math.cos((Math.PI / 4) + this.rotation)) + this.xpos;
@@ -64,7 +74,6 @@
 
                 ctx.moveTo(this.xpos, this.ypos);
                 ctx.lineTo(x1, y1);
-                ctx.lineWidth = 3;
                 ctx.stroke();
 
                 // Second line
@@ -97,18 +106,21 @@
                 this.xpos += this.xvelo;
                 this.ypos += this.yvelo;
 
+                // Collision detection for the bottom of the canvas
                 if (this.ypos >= canvas.height - this.radius) {
                     this.ypos = canvas.height - this.radius;
                     this.yvelo *= -0.9;
                     this.rotationSpeed *= -1;
                 }
 
+                // Collision detection for the top of the canvas
                 if (this.ypos <= this.radius) {
                     this.ypos = this.radius;
                     this.yvelo *= -0.9;
                     this.rotationSpeed *= -1;
                 }
 
+                // Collision detection for the left or right walls of the canvas
                 if (this.xpos >= canvas.width - this.radius || this.xpos <= this.radius) {
                     this.xvelo *= -1;
                 }
@@ -157,8 +169,6 @@
                     this.paddleY += 7;
                 }
             }
-
-
         }
 
         let leftPaddle = new Paddle(15, 30, canvas.height / 2); // Ball paddle
@@ -166,8 +176,7 @@
         let leftScore = 0;    // Score for the left paddle
         let rightScore = 0;   // Score for the right paddle
 
-
-        let b1 = new Ball(60, 30, 3, 0.3, 15);
+        let balls = [new Ball(60, 30, 3, 0.3, 15)]; // Initialize with one ball
         let message = "";
 
         function clearMessage() {
@@ -196,17 +205,19 @@
                 }
 
                 ctx.font = "20px Arial";
-
                 // Set a timeout to clear the message after 0.75 seconds
                 setTimeout(clearMessage, 750);
             }
         }
 
-
         function repeatme() {
-            b1.draw();
-            b1.move();
-            b1.rotate();
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas for each frame
+
+            for (let ball of balls) { //This loop allows access to each ball object one by one
+                ball.draw();
+                ball.move();
+                ball.rotate();
+            }
 
             leftPaddle.drawPaddle();
             leftPaddle.move();
@@ -215,22 +226,21 @@
             rightPaddle.move();
 
             // Detect collisions
-            detectCollision(b1, leftPaddle);
-            detectCollision(b1, rightPaddle);
-
+            for (let ball of balls) {
+                detectCollision(ball, leftPaddle);
+                detectCollision(ball, rightPaddle);
+            }
             // Display scores
             ctx.font = "25px Arial";
             ctx.fillStyle = "#0095DD";
-            ctx.fillText("Left Score: " + leftScore, 10, 30);     // Left paddle score
-            ctx.fillText("Right Score: " + rightScore, 280, 30); // Right paddle
-
+            ctx.fillText("Left Score: " + leftScore, 10, 30);
+            ctx.fillText("Right Score: " + rightScore, 280, 30);
 
             //Checking to see if message exists, if it does, display the message
             if (message) {
                 ctx.font = "25px Arial";
                 ctx.fillText(message, canvas.width / 2 - 80, 50);
             }
-
 
             window.requestAnimationFrame(repeatme);
         }
@@ -239,7 +249,6 @@
 
         document.addEventListener("keydown", (e) => leftPaddle.keyDownHandler(e, "ArrowUp", "ArrowDown"));
         document.addEventListener("keyup", (e) => leftPaddle.keyUpHandler(e, "ArrowUp", "ArrowDown"));
-
         document.addEventListener("keydown", (e) => rightPaddle.keyDownHandler(e, "w", "s"));
         document.addEventListener("keyup", (e) => rightPaddle.keyUpHandler(e, "w", "s"));
 
@@ -251,32 +260,40 @@
         });
 
         document.addEventListener('keydown', function (e) {
-            if (e.key === '1') {
-                b1.rotationSpeed = Math.max(0.01, b1.rotationSpeed - 0.05);
-            }
-            else if (e.key === '2') {
-                b1.rotationSpeed += 0.05;
-            }
-            else if (e.key === '3') {
-                if (b1.xvelo < 0) 
-                {
-                    b1.xvelo -= 1;
-                } else 
-                {
-                    b1.xvelo += 1;
+            for (let ball of balls) {
+                if (e.key === '1') {
+                    ball.rotationSpeed = Math.max(0.01, ball.rotationSpeed - 0.05);
+                } else if (e.key === '2') {
+                    ball.rotationSpeed += 0.05;
+                } else if (e.key === '3') {
+                    if (ball.xvelo < 0) {
+                        ball.xvelo -= 1;
+                    } else {
+                        ball.xvelo += 1;
+                    }
+                } else if (e.key === '4') {
+                    if (ball.yvelo < 0) {
+                        ball.yvelo -= 1;
+                    } else {
+                        ball.yvelo += 1;
+                    }
                 }
             }
-            else if (e.key === '4') {
-                if (b1.yvelo < 0) 
-                {
-                    b1.yvelo -= 1;
-                } else 
-                {
-                    b1.yvelo += 1;
-                }
-            }
-
         });
+
+
+        // Add event listener for double click
+        canvas.addEventListener('dblclick', function (e) {
+            // Generate random position within the canvas
+            let randomX = Math.random() * (canvas.width - 30) + 15; // Prevent spawning on the edge
+            let randomY = Math.random() * (canvas.height - 30) + 15; // Prevent spawning on the edge
+            let randomXVelocity = Math.random() * 2 + 1; // Random speed
+            let randomYVelocity = Math.random() * 2 + 1; // Random speed
+
+            // Create a new ball and add it to the array
+            balls.push(new Ball(randomX, randomY, randomXVelocity, randomYVelocity, 15));
+        });
+
     </script>
 
 </body>
