@@ -294,6 +294,29 @@
             balls.push(new Ball(randomX, randomY, randomXVelocity, randomYVelocity, 15));
         });
 
+        // Add event listener for clicking on the ball to delete it
+        canvas.addEventListener('click', function (e) {
+            // Get the mouse click position relative to the canvas
+            let mouseX = e.clientX - canvas.offsetLeft;
+            let mouseY = e.clientY - canvas.offsetTop;
+
+            // Loop through all the balls
+            for (let i = balls.length - 1; i >= 0; i--) {
+                let ball = balls[i];
+
+                // Calculate the distance between the mouse click and the ball's center
+                let dx = mouseX - ball.xpos;
+                let dy = mouseY - ball.ypos;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+
+                // If the click is within the ball's radius, remove the ball from the array
+                if (distance <= ball.radius) {
+                    balls.splice(i, 1); // Remove the ball from the array
+                    break; // Stop checking once a ball is removed
+                }
+            }
+        });
+
     </script>
 
 </body>
