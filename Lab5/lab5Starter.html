@@ -43,18 +43,32 @@
                 this.boundaryRadius = boundaryRadius;
                 this.position = this.sphere.position;
                 this.position.set(0, 0, 10);  // Set sphere to start above the plane
-                this.velocityX = 0.05;  // Initial velocity along x-axis
+                this.velocityX = .1;  // Initial velocity along x-axis
+                this.velocityY = .1;  // Initial velocity along y-axis
             }
 
             // Method to update sphere's position
             updatePosition() {
-                // Move the sphere along the x-axis
+                // Move the sphere along the x-axis and y-axis
                 this.position.x += this.velocityX;
+                this.position.y += this.velocityY;
 
-                // Check for boundary collision and reverse direction
-                const distanceFromCenter = Math.sqrt(Math.pow(this.position.x, 2) + Math.pow(this.position.y, 2));
-                if (distanceFromCenter + this.radius > this.boundaryRadius) {
-                    this.velocityX = -this.velocityX;  // Reverse direction when hitting the boundary
+                // Check for boundary collision on the x-axis
+                const distanceFromCenterX = Math.sqrt(Math.pow(this.position.x, 2) + Math.pow(this.position.y, 2));
+                if (distanceFromCenterX + this.radius > this.boundaryRadius) {
+                    this.velocityX = -this.velocityX;  // Reverse direction when hitting the horizontal boundary
+                }
+
+                // Bounce off the plane
+                if (this.position.y - this.radius <= -10) { // Plane position is y = -10
+                    this.position.y = -10 + this.radius;  // Reset position to be on the plane
+                    this.velocityY = -this.velocityY;  // Reverse vertical direction
+                }
+
+
+                // Check for vertical boundaries
+                if (this.position.y >= 10 || this.position.y <= -10) {
+                    this.velocityY = -this.velocityY;  // Reverse vertical direction when hitting the vertical limits
                 }
             }
 
@@ -73,15 +87,11 @@
         spotLight.shadow.mapSize.height = 1024;
         scene.add(spotLight);
 
-        // Camera Helper
-        const cameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
-        scene.add(cameraHelper);
-
-        // Plane added
+        // Add a plane under the sphere to catch the shadow
         const planeGeometry = new THREE.PlaneGeometry(200, 200);
         const planeMaterial = new THREE.MeshLambertMaterial({ color: 0x808080, side: THREE.DoubleSide });
         const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-        plane.rotation.x = -Math.PI / 2;  // Rotating the plane so it appears flat
+        plane.rotation.x = -Math.PI / 2;  // Rotate plane to lie flat
         plane.position.y = -10;  // Position the plane under the sphere
         plane.receiveShadow = true;  // Plane receives shadows
         scene.add(plane);
@@ -94,7 +104,7 @@
             renderer.render(scene, camera);
 
             requestAnimationFrame(repeatme);
-
+            
             // Update sphere's position and rotation
             sphereObject.updatePosition();
             sphereObject.rotateSphere();
@@ -105,4 +115,3 @@
 </body>
 
 </html>
-``
