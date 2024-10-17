@@ -22,26 +22,28 @@
         // Set camera position
         camera.position.z = 80;
 
-        // Implement renderer - Create a WebGL renderer for rendering the scene.
+        // Implement renderer - Create a WebGL renderer for rendering the scene and enable shadows.
         var renderer = new THREE.WebGLRenderer();
+        renderer.shadowMap.enabled = true;  // Enable shadow maps
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Define Sphere class
-        class Sphere {
+        // Define SphereObject class
+        class SphereObject {
             constructor(scene, radius, color, boundaryRadius) {
                 // Create a sphere geometry and material
                 const material = new THREE.MeshLambertMaterial({ color: color, wireframe: false });
                 const geometry = new THREE.SphereGeometry(radius, 100, 100);
                 this.sphere = new THREE.Mesh(geometry, material);
+                this.sphere.castShadow = true;  // Sphere casts shadows
                 scene.add(this.sphere);
 
                 // Set initial properties
                 this.radius = radius;
                 this.boundaryRadius = boundaryRadius;
                 this.position = this.sphere.position;
-                this.position.set(0, 0, 0);
-                this.velocityX = 1.05;  // Initial velocity along x-axis
+                this.position.set(0, 0, 10);  // Set sphere to start above the plane
+                this.velocityX = 0.05;  // Initial velocity along x-axis
             }
 
             // Method to update sphere's position
@@ -66,15 +68,33 @@
         // Create lighting for the scene
         const spotLight = new THREE.SpotLight(0xffffff);
         spotLight.position.set(50, 50, 50);
+        spotLight.castShadow = true;  // Spotlight casts shadows
+        spotLight.shadow.mapSize.width = 1024;
+        spotLight.shadow.mapSize.height = 1024;
         scene.add(spotLight);
 
-        const sphereObject = new Sphere(scene, 10, 0xffff00, 100);
+        // Camera Helper
+        const cameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
+        scene.add(cameraHelper);
 
+        // Plane added
+        const planeGeometry = new THREE.PlaneGeometry(200, 200);
+        const planeMaterial = new THREE.MeshLambertMaterial({ color: 0x808080, side: THREE.DoubleSide });
+        const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        plane.rotation.x = -Math.PI / 2;  // Rotating the plane so it appears flat
+        plane.position.y = -10;  // Position the plane under the sphere
+        plane.receiveShadow = true;  // Plane receives shadows
+        scene.add(plane);
+
+        // Instantiate a SphereObject with radius 10 and boundary radius of 30
+        const sphereObject = new SphereObject(scene, 10, 0xffff00, 30);
+
+        // Repeatme function repeats every frame
         const repeatme = function () {
             renderer.render(scene, camera);
 
             requestAnimationFrame(repeatme);
-            
+
             // Update sphere's position and rotation
             sphereObject.updatePosition();
             sphereObject.rotateSphere();
@@ -85,3 +105,4 @@
 </body>
 
 </html>
+``
