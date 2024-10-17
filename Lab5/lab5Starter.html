@@ -27,42 +27,57 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Define the geometry and material for a sphere.
-        const material = new THREE.MeshLambertMaterial({ color: 0xffff00, wireframe: false, });
-        const geometry = new THREE.SphereGeometry(10, 100, 100);
-        const sphere = new THREE.Mesh(geometry, material);
-        
-        scene.add(sphere);
+        // Define Sphere class
+        class Sphere {
+            constructor(scene, radius, color, boundaryRadius) {
+                // Create a sphere geometry and material
+                const material = new THREE.MeshLambertMaterial({ color: color, wireframe: false });
+                const geometry = new THREE.SphereGeometry(radius, 100, 100);
+                this.sphere = new THREE.Mesh(geometry, material);
+                scene.add(this.sphere);
 
+                // Set initial properties
+                this.radius = radius;
+                this.boundaryRadius = boundaryRadius;
+                this.position = this.sphere.position;
+                this.position.set(0, 0, 0);
+                this.velocityX = 1.05;  // Initial velocity along x-axis
+            }
+
+            // Method to update sphere's position
+            updatePosition() {
+                // Move the sphere along the x-axis
+                this.position.x += this.velocityX;
+
+                // Check for boundary collision and reverse direction
+                const distanceFromCenter = Math.sqrt(Math.pow(this.position.x, 2) + Math.pow(this.position.y, 2));
+                if (distanceFromCenter + this.radius > this.boundaryRadius) {
+                    this.velocityX = -this.velocityX;  // Reverse direction when hitting the boundary
+                }
+            }
+
+            // Method to rotate the sphere
+            rotateSphere() {
+                this.sphere.rotation.x += 0.01;
+                this.sphere.rotation.y += 0.01;
+            }
+        }
+
+        // Create lighting for the scene
         const spotLight = new THREE.SpotLight(0xffffff);
         spotLight.position.set(50, 50, 50);
         scene.add(spotLight);
 
-        // Create an invisible boundary circle
-        const boundaryRadius = 100; // Set the radius of the invisible boundary
-        const centerX = 0; // Center of the circle on the x-axis
-        const centerY = 0; // Center of the circle on the y-axis
+        const sphereObject = new Sphere(scene, 10, 0xffff00, 100);
 
-        // Velocity for sphere movement along the x-axis
-        let xVelocity = 1.05;
-
-        // Repeatme function repeats every frame.
         const repeatme = function () {
             renderer.render(scene, camera);
 
             requestAnimationFrame(repeatme);
-            // Code to rotate sphere
-            sphere.rotation.x += 0.01;
-            sphere.rotation.y += 0.01;
-
-            // Code to move sphere
-            sphere.position.x += xVelocity;
-
-            // Check if the sphere hits the boundary using the Pythagorean theorem
-            const distance = Math.sqrt(Math.pow(sphere.position.x - centerX, 2) + Math.pow(sphere.position.y - centerY, 2));
-            if (distance + 10 > boundaryRadius) {  // 10 is the radius of the sphere
-                xVelocity = -xVelocity;  // Reverse direction when it hits the boundary
-            }
+            
+            // Update sphere's position and rotation
+            sphereObject.updatePosition();
+            sphereObject.rotateSphere();
         }
         repeatme();
 
