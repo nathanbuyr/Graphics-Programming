@@ -30,7 +30,7 @@
 
         // Define SphereObject class
         class SphereObject {
-            constructor(scene, radius, color, boundaryRadius, initialX, initialY) {
+            constructor(scene, radius, color, boundarySize, initialX, initialY, initialZ) {
                 // Create a sphere geometry and material
                 const material = new THREE.MeshLambertMaterial({ color: color, wireframe: false });
                 const geometry = new THREE.SphereGeometry(radius, 100, 100);
@@ -40,11 +40,13 @@
 
                 // Set initial properties
                 this.radius = radius;
-                this.boundaryRadius = boundaryRadius;
+                this.boundarySize = boundarySize; // Cube boundary size
                 this.positionX = initialX;  // X position
                 this.positionY = initialY;  // Y position
+                this.positionZ = initialZ;  // Z position
                 this.velocityX = Math.random() * 0.1 + 0.05;  // Initial velocity along x-axis
                 this.velocityY = Math.random() * 0.1 + 0.05;  // Initial velocity along y-axis
+                this.velocityZ = Math.random() * 0.1 + 0.05;  // Initial velocity along z-axis
                 this.gravity = 0.0010;  // Gravity factor for slowing down vertical velocity
             }
 
@@ -53,41 +55,40 @@
                 // Apply gravity to vertical velocity
                 this.velocityY -= this.gravity;
 
-                // Move the sphere along the x-axis and y-axis
+                // Move the sphere along the x-axis, y-axis, and z-axis
                 this.positionX += this.velocityX;
                 this.positionY += this.velocityY;
+                this.positionZ += this.velocityZ;
 
                 // Update the sphere's actual position in the Three.js mesh
-                this.sphere.position.set(this.positionX, this.positionY, 10);
+                this.sphere.position.set(this.positionX, this.positionY, this.positionZ);
 
-                // Check for boundary collision on the x-axis
-                const distanceFromCenterX = Math.sqrt(Math.pow(this.positionX, 2) + Math.pow(this.positionY, 2));
-                if (distanceFromCenterX + this.radius > this.boundaryRadius) {
-                    this.velocityX = -this.velocityX;  // Reverse direction when hitting the horizontal boundary
+                // Check for boundary collision with the cube in all axes
+                if (this.positionX + this.radius > this.boundarySize / 2 || this.positionX - this.radius < -this.boundarySize / 2) {
+                    this.velocityX = -this.velocityX;  // Reverse x-axis direction when hitting the cube boundary
                 }
 
-                // Bounce off the plane
-                if (this.positionY - this.radius <= -10) { // Plane position is y = -10
-                    this.positionY = -10 + this.radius;  // Reset position to be on the plane
-                    this.velocityY = -this.velocityY * 0.9;  // Reverse vertical direction and reduce velocity by 10%
+                if (this.positionY + this.radius > this.boundarySize / 2 || this.positionY - this.radius < -this.boundarySize / 2) {
+                    this.velocityY = -this.velocityY * 0.9;  // Reverse y-axis direction when hitting the cube boundary and apply 10% velocity reduction
                 }
 
-                // Check for vertical boundaries
-                if (this.positionY >= 10 || this.positionY <= -10) {
-                    this.velocityY = -this.velocityY;  // Reverse vertical direction when hitting the vertical limits
+                if (this.positionZ + this.radius > this.boundarySize / 2 || this.positionZ - this.radius < -this.boundarySize / 2) {
+                    this.velocityZ = -this.velocityZ;  // Reverse z-axis direction when hitting the cube boundary
                 }
 
                 // Check for collision with another sphere with pythagorus theorem
                 if (otherSphere) {
                     const dx = this.positionX - otherSphere.positionX;
                     const dy = this.positionY - otherSphere.positionY;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const dz = this.positionZ - otherSphere.positionZ;
+                    const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
                     // Check if the spheres collide
                     if (distance < this.radius + otherSphere.radius) {
                         // Reverse velocities if they do collide
                         this.velocityX = -this.velocityX;
                         this.velocityY = -this.velocityY;
+                        this.velocityZ = -this.velocityZ;
                     }
                 }
             }
@@ -107,18 +108,25 @@
         spotLight.shadow.mapSize.height = 1024;
         scene.add(spotLight);
 
-        // Add a plane under the sphere to catch the shadow
+        // Add a transparent cube to act as the boundary
+        const boundarySize = 60;  // Cube boundary size
+        const cubeGeometry = new THREE.BoxGeometry(boundarySize, boundarySize, boundarySize);
+        const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff, wireframe: true, transparent: true, opacity: 0.2 });
+        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        scene.add(cube);  // Add the cube to the scene
+
+        // Add a plane under the spheres to catch the shadow
         const planeGeometry = new THREE.PlaneGeometry(200, 200);
         const planeMaterial = new THREE.MeshLambertMaterial({ color: 0x808080, side: THREE.DoubleSide });
         const plane = new THREE.Mesh(planeGeometry, planeMaterial);
         plane.rotation.x = -Math.PI / 2;  // Rotate plane to lie flat
-        plane.position.y = -10;  // Position the plane under the sphere
+        plane.position.y = -30;  // Position the plane under the sphere
         plane.receiveShadow = true;  // Plane receives shadows
         scene.add(plane);
 
         // Instantiate two SphereObjects
-        const sphereObject1 = new SphereObject(scene, 10, 0xffff00, 30, -10, 0);
-        const sphereObject2 = new SphereObject(scene, 10, 0xff0000, 30, 10, 0);
+        const sphereObject1 = new SphereObject(scene, 10, 0xffff00, boundarySize, -10, 0, 0);
+        const sphereObject2 = new SphereObject(scene, 10, 0xff0000, boundarySize, 10, 0, 0);
 
         // Repeatme function repeats every frame
         const repeatme = function () {
