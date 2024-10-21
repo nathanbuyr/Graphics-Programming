@@ -34,9 +34,15 @@
                 // Create a sphere geometry and material
                 const material = new THREE.MeshLambertMaterial({ color: color, wireframe: false });
                 const geometry = new THREE.SphereGeometry(radius, 100, 100);
+                
                 this.sphere = new THREE.Mesh(geometry, material);
                 this.sphere.castShadow = true;  // Sphere casts shadows
                 scene.add(this.sphere);
+
+                // Adding a wireframe on top of the sphere
+                const wireframeMaterial = new THREE.MeshBasicMaterial({ color: 0x000000, wireframe: true });
+                this.wireframe = new THREE.Mesh(geometry, wireframeMaterial);
+                this.sphere.add(this.wireframe);
 
                 // Set initial properties
                 this.radius = radius;
@@ -107,6 +113,10 @@
         spotLight.shadow.mapSize.width = 1024;
         spotLight.shadow.mapSize.height = 1024;
         scene.add(spotLight);
+
+        // Add a camera helper to display the light source
+        const spotLightHelper = new THREE.CameraHelper(spotLight.shadow.camera);
+        scene.add(spotLightHelper);
 
         // Add a transparent cube to act as the boundary
         const boundarySize = 60;  // Cube boundary size
