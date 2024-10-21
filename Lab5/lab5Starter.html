@@ -45,10 +45,14 @@
                 this.positionY = initialY;  // Y position
                 this.velocityX = Math.random() * 0.1 + 0.05;  // Initial velocity along x-axis
                 this.velocityY = Math.random() * 0.1 + 0.05;  // Initial velocity along y-axis
+                this.gravity = 0.0010;  // Gravity factor for slowing down vertical velocity
             }
 
             // Method to update sphere's position
             updatePosition(otherSphere) {
+                // Apply gravity to vertical velocity
+                this.velocityY -= this.gravity;
+
                 // Move the sphere along the x-axis and y-axis
                 this.positionX += this.velocityX;
                 this.positionY += this.velocityY;
@@ -65,7 +69,7 @@
                 // Bounce off the plane
                 if (this.positionY - this.radius <= -10) { // Plane position is y = -10
                     this.positionY = -10 + this.radius;  // Reset position to be on the plane
-                    this.velocityY = -this.velocityY;  // Reverse vertical direction
+                    this.velocityY = -this.velocityY * 0.9;  // Reverse vertical direction and reduce velocity by 10%
                 }
 
                 // Check for vertical boundaries
