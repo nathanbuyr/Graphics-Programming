@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js" integrity="sha512-vc58qvvBdrDR4etbxMdlTt4GBQk1qjvyORR2nrsPsFPyrs+/u5c3+1Ct6upOgdZoIl7eq6k3a1UPDSNAQi/32A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+ <head>
+ <title>D3.js Demo</title>
+ <meta charset="UTF-8">
+ <style type="text/css"></style>
+ </head>
+ <body>
+    <h1>Nathan Buyrchiyev</h1>
+ <script type="text/javascript">
+
+    //JSON call to api data
+    $.getJSON("https://tinyurl.com/k4chnujx", function (data) {
+        //print to console
+        console.log(data);
+        //call function
+        plotCO2Data(data);
+    });
+ </script>
+
+
+
+ </body>
+</html>
