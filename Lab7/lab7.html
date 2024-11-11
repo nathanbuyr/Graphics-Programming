@@ -2,32 +2,86 @@
 <html>
 
 <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js" integrity="sha512-vc58qvvBdrDR4etbxMdlTt4GBQk1qjvyORR2nrsPsFPyrs+/u5c3+1Ct6upOgdZoIl7eq6k3a1UPDSNAQi/32A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.js"
+    integrity="sha512-iiZOijMkLFQSa43AyuzD6p176GJlnhWXEv7loEZFkCDpFQvZCijZLE6U8IRpAIb53KagIIwhSwHWTgsDlci/jw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
- <head>
- <title>D3.js Demo</title>
- <meta charset="UTF-8">
- <style type="text/css"></style>
- </head>
- <body>
+<head>
+    <title>D3.js Demo</title>
+    <meta charset="UTF-8">
+    <style type="text/css"></style>
+</head>
+
+<body>
     <h1>Nathan Buyrchiyev</h1>
- <script type="text/javascript">
+    <script type="text/javascript">
 
-    //JSON call to api data
-    $.getJSON("https://tinyurl.com/k4chnujx", function (data) {
-        //print to console
-        console.log(data);
-        //call function
-        plotCO2Data(data);
-    });
+        //JSON call to api data
+        $.getJSON("https://tinyurl.com/k4chnujx", function (data) {
+            //print to console
+            console.log(data);
+            //call function
+            plotCO2Data(data);
+        });
 
-    function plotCO2Data(data) {
-        console.log("Json has been downloaded");
-    }
- </script>
+        //To execute once Json data has been downloaded
+        function plotCO2Data(data) {
+            console.log("Json has been downloaded");
+
+            //Setting up svg size and margins
+            var margin = { top: 50, right: 50, bottom: 50, left: 50 },
+                width = 900 - margin.left - margin.right,
+                height = 670 - margin.top - margin.bottom;
+
+            //parsing the date and time
+            var x = d3.scaleLinear()
+                .domain(d3.extent(data, function (d) { return (d["years_before_2023"]); }))
+                .range([0, width]);
+
+            var y = d3.scaleLinear()
+                .domain(d3.extent(data, function (d) { return (d["co2_ppmv"]); }))
+                .range([height, 0]);
+
+            //Axes
+            var xAxis = d3.axisBottom(x)
+                .ticks(3);
+
+            var yAxis = d3.axisLeft(y)
+                .ticks(3);
+
+            //Appending the svg
+            var svg = d3.select('body')
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            //Adding the axes
+            svg.append('g')
+                .attr('class', 'x axis')
+                .attr("transform", "translate(0," + (height - margin.top + margin.bottom) + ")")
+                .call(xAxis);
+
+            svg.append('g')
+                .attr('class', 'y axis')
+                .call(yAxis);
+
+            var valueline = d3.line()
+                .x(function (d) { return x(d["years_before_2023"]) })
+                .y(function (d) { return y(d["co2_ppmv"]) });
+
+            svg.append("path")
+                .attr("fill", "None")
+                .attr("stroke", "red")
+                .attr("d", valueline(data));
+        }
+    </script>
 
 
 
- </body>
+</body>
+
 </html>
