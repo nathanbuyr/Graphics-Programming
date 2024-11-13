@@ -29,7 +29,7 @@
             console.log("Json has been downloaded");
 
             //Setting up svg size and margins
-            var margin = { top: 50, right: 50, bottom: 60, left: 60 },
+            var margin = { top: 50, right: 50, bottom: 60, left: 150 },
                 width = 900 - margin.left - margin.right,
                 height = 670 - margin.top - margin.bottom;
 
@@ -38,16 +38,33 @@
                 .domain(d3.extent(data, function (d) { return (d["years_before_2023"]); }))
                 .range([0, width]);
 
-            var y = d3.scaleLinear()
-                .domain(d3.extent(data, function (d) { return (d["co2_ppmv"]); }))
+            // Scale for CO2
+            var yCO2 = d3.scaleLinear()
+                .domain(d3.extent(data, function (d) { return d["co2_ppmv"]; }))
                 .range([height, 0]);
 
-            //Axes
-            var xAxis = d3.axisBottom(x)
-                .ticks(3);
+            // Scale for CH4
+            var yCH4 = d3.scaleLinear()
+                .domain(d3.extent(data, function (d) { return d["ch4_ppb"]; }))
+                .range([height, 0]);
 
-            var yAxis = d3.axisLeft(y)
-                .ticks(3);
+            // Scale for Temperature Anomaly
+            var yTemp = d3.scaleLinear()
+                .domain(d3.extent(data, function (d) { return d["temp_anomaly"]; }))
+                .range([height, 0]);
+
+            // Axes
+            var xAxis = d3.axisBottom(x)
+            .ticks(3);
+
+            var yAxisCO2 = d3.axisLeft(yCO2)
+            .ticks(3);
+
+            var yAxisCH4 = d3.axisLeft(yCH4)
+            .ticks(3);
+
+            var yAxisTemp = d3.axisLeft(yTemp)
+            .ticks(3);
 
             //Appending the svg
             var svg = d3.select('body')
@@ -65,11 +82,31 @@
                 .selectAll("text") // Increase font size for x-axis labels
                 .style("font-size", "14px");
 
+            // Adding left y-axis for CO2
             svg.append('g')
                 .attr('class', 'y axis')
-                .call(yAxis)
+                .call(yAxisCO2)
                 .selectAll("text") // Increase font size for y-axis labels
-                .style("font-size", "14px");
+                .style("font-size", "14px")
+                .style("fill", "red");
+
+            // Adding left y-axis for CH4, slightly offset
+            svg.append('g')
+                .attr('class', 'y axis')
+                .attr("transform", "translate(-40,0)") // Offset for CH4 axis
+                .call(yAxisCH4)
+                .selectAll("text")
+                .style("font-size", "14px")
+                .style("fill", "blue");
+
+            // Adding left y-axis for Temperature Anomaly, further offset
+            svg.append('g')
+                .attr('class', 'y axis')
+                .attr("transform", "translate(-100,0)") // Offset for Temperature axis
+                .call(yAxisTemp)
+                .selectAll("text")
+                .style("font-size", "14px")
+                .style("fill", "#b54ede");
 
             // Adding x-axis label
             svg.append("text")
@@ -79,14 +116,15 @@
                 .text("Years Before 2023")
                 .style("font-size", "16px");
 
-            // Adding y-axis label
+            // Adding y-axis label for CO2
             svg.append("text")
                 .attr("text-anchor", "end")
                 .attr("transform", "rotate(-90)")
                 .attr("y", -margin.left + 20)
                 .attr("x", -height / 2)
                 .text("CO2 (ppmv)")
-                .style("font-size", "16px");
+                .style("font-size", "16px")
+                .style("fill", "red");
 
             // Adding chart title
             svg.append("text")
@@ -95,16 +133,39 @@
                 .attr("text-anchor", "middle")
                 .style("font-size", "20px")
                 .style("font-weight", "bold")
-                .text("CO2 Concentration Over Time");
+                .text("CO2, CH4, and Temperature Anomaly Over Time");
 
-            var valueline = d3.line()
-                .x(function (d) { return x(d["years_before_2023"]) })
-                .y(function (d) { return y(d["co2_ppmv"]) });
+            // Generating the lines for CO2, CH4, and Temperature Anomaly
+            var co2Line = d3.line()
+                .x(function (d) { return x(d["years_before_2023"]); })
+                .y(function (d) { return yCO2(d["co2_ppmv"]); });
+
+            var ch4Line = d3.line()
+                .x(function (d) { return x(d["years_before_2023"]); })
+                .y(function (d) { return yCH4(d["ch4_ppb"]); });
+
+            var tempLine = d3.line()
+                .x(function (d) { return x(d["years_before_2023"]); })
+                .y(function (d) { return yTemp(d["temp_anomaly"]); });
+
+            // Adding the lines
+            svg.append("path")
+                .attr("fill", "none")
+                .attr("stroke", "red")
+                .attr("stroke-width", 2)
+                .attr("d", co2Line(data));
 
             svg.append("path")
-                .attr("fill", "None")
-                .attr("stroke", "red")
-                .attr("d", valueline(data));
+                .attr("fill", "none")
+                .attr("stroke", "blue")
+                .attr("stroke-width", 2)
+                .attr("d", ch4Line(data));
+
+            svg.append("path")
+                .attr("fill", "none")
+                .attr("stroke", "#b54ede")
+                .attr("stroke-width", 2)
+                .attr("d", tempLine(data));
         }
     </script>
 </body>
