@@ -33,14 +33,29 @@ for i in range(len(dst)):
         if dst[i][j] > (threshold*dst.max()):
             cv2.circle(imgHarris,(j,i),3,(123, 55, 100),-1)
 
-plt.subplot(1, 3,1),plt.imshow(gray_image, cmap = 'gray')
+# Initiate ORB detector
+orb = cv2.ORB_create()
+ 
+# find the keypoints with ORB
+kp = orb.detect(gray_image,None)
+ 
+# compute the descriptors with ORB
+kp, des = orb.compute(gray_image, kp)
+ 
+# draw only keypoints location,not size and orientation
+img2 = cv2.drawKeypoints(gray_image, kp, None, color=(0,255,0), flags=0)
+
+plt.subplot(2, 2,1),plt.imshow(gray_image, cmap = 'gray')
 plt.title('GrayScale'), plt.xticks([]), plt.yticks([])
 
-plt.subplot(1, 3,2),plt.imshow((imgHarris), cmap = 'gray')
+plt.subplot(2, 2,2),plt.imshow((imgHarris), cmap = 'gray')
 plt.title('Harris corner detection'), plt.xticks([]), plt.yticks([])
 
-plt.subplot(1, 3,3),plt.imshow((imgShiTomasi), cmap = 'gray')
+plt.subplot(2, 2,3),plt.imshow((imgShiTomasi), cmap = 'gray')
 plt.title('GFTT / Shi Tomasi corner detection'), plt.xticks([]), plt.yticks([])
+
+plt.subplot(2, 2,4),plt.imshow((img2), cmap = 'gray')
+plt.title('ORB detection'), plt.xticks([]), plt.yticks([])
 
 plt.show()
 
