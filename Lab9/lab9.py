@@ -25,7 +25,7 @@ robGFTT = cv2.goodFeaturesToTrack(rob_gray,100,0.01,10)
 
 #Deep copying for Shi Tomasi
 imgShiTomasi = copy.deepcopy(image)
-robShitTomasi = copy.deepcopy(robimage)
+robShiTomasi = copy.deepcopy(robimage)
 
 # GFTT corner loop
 for i in corners:
@@ -34,7 +34,7 @@ for i in corners:
 
 for i in corners:
     x,y = i.ravel()
-    cv2.circle(robShitTomasi,(x,y),3,(0, 255, 0),-1)
+    cv2.circle(robShiTomasi,(x,y),3,(0, 255, 0),-1)
 
 #Plotting detected Harris corners
 threshold = 0.05; #number between 0 and 1
@@ -85,7 +85,7 @@ plt.title('GrayScale'), plt.xticks([]), plt.yticks([])
 plt.subplot(2, 2,2),plt.imshow((robHarris), cmap = 'gray')
 plt.title('Harris corner detection'), plt.xticks([]), plt.yticks([])
 
-plt.subplot(2, 2,3),plt.imshow((robShitTomasi), cmap = 'gray')
+plt.subplot(2, 2,3),plt.imshow((robShiTomasi), cmap = 'gray')
 plt.title('GFTT / Shi Tomasi corner detection'), plt.xticks([]), plt.yticks([])
 
 plt.subplot(2, 2,4),plt.imshow((robOrb), cmap = 'gray')
