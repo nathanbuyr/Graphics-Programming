@@ -10,6 +10,14 @@ model = YOLO("yolo11n.pt")
 video_path = "youtube_Gr0HpDM8Ki8_1920x1080_h264.mp4"
 cap = cv2.VideoCapture(video_path)
 
+frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+fps = int(cap.get(cv2.CAP_PROP_FPS))
+
+output_path = "output_tracking.mp4"
+fourcc = cv2.VideoWriter_fourcc(*'mp4v') 
+out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
+
 track_history = defaultdict(lambda: [])
 
 # Loop through the video frames
@@ -66,6 +74,9 @@ while cap.isOpened():
             if len(track) > 30:  # Retain history for 30 frames
                 track.pop(0)
 
+        # Write the annotated frame to the output video
+        out.write(annotated_frame)
+
         # Display the annotated frame
         cv2.namedWindow('YOLO11 Tracking', cv2.WINDOW_KEEPRATIO)
         cv2.imshow("YOLO11 Tracking", annotated_frame)
@@ -80,4 +91,5 @@ while cap.isOpened():
 
 # Release the video capture object and close the display window
 cap.release()
+out.release()
 cv2.destroyAllWindows()
